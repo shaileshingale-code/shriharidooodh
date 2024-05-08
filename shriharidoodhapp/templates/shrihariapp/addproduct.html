@@ -1,0 +1,105 @@
+ {% include 'shrihariapp/navigation.html' %}
+    <div class="main" style="margin-top: -100px;height:120%"> 
+         {{ form.non_field_errors }}
+     
+      <div align="right">
+             <a href="{% url 'product_list' %}"> <i class="fa fa-list"></i> Product List</a>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+            <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
+
+           <form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+     <!-- {{ form.as_p }} -->
+    
+    <div class="form-group">
+        
+        <input type="hidden" class="form-control" name="apply_by" value="{{ user.username }}">
+
+         {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label >Product Name</label>
+        <input type="text" class="form-control" name="product_name" value="{{ form.product_name.value }}" required>
+
+         {% for error in form.product_name.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label >Varient:</label>
+        <input type="text" class="form-control" name="varient" value="{% if form.varient.value is not empty %}{{ form.varient.value }}{% else %}{{ varient }}{% endif %}" required  placeholder="eg. 1ltr,2ltr,1kg,2kg">
+
+        {% for error in form.varient.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">MRP:</label>
+        <input type="text" class="form-control" name="mrpprice" value="{{ form.mrpprice.value }}" required>
+          {% for error in form.mrpprice.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Sale Price:</label>
+        <input type="text" class="form-control" name="saleprice" value="{{ form.saleprice.value }}" required>
+          {% for error in form.saleprice.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+    
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Description:</label>
+        <input type="text" class="form-control" name="description" value="{{ form.description.value }}" required>
+          {% for error in form.description.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+     <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Image:</label>
+        <input type="file" class="form-control" name="product_image" value="{{ form.product_image.value }}" >
+          {% for error in form.product_image.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+   
+
+    <button class="btn btn-primary" type="submit">Apply </button> 
+</form>
+
+
+    </div> 
+  </div> 
+</div>
+
+<div class="col-md-4">
+</div>
+</div>
+
+  
+
+  <script src="/media/index.js"></script> 
+</body> 
+</html>

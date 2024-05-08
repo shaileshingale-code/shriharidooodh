@@ -1,0 +1,304 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+     
+      <div align="right">
+             <a href="{% url 'leave_apply' %}"> <i class="fa fa-plus"></i> Leave Application</a>
+      </div>
+      <br>
+           <table class="table">
+    <thead>
+      <tr>
+        <th>Email Of Student</th>
+         <th>Leave From</th>
+         <th>Leave Till</th>
+         <th>Reason</th>  
+         <th>status</th>  
+         <th>Parent's Status</th>  
+      </tr>
+
+    </thead>
+    <tbody>
+
+    {% for leave in leaves %}
+
+    {%  if  user.role == 'admin' %}
+
+    <tr>
+        <td>{{ leave.apply_by }}</td>
+        <td>{{ leave.fromdate }}</td>
+        <td>{{ leave.todate }}</td>
+         <td>{{ leave.reason }}</td>
+
+         {%  if  user.role == 'admin' %}
+         <td>
+    {% if leave.approved_status == 0 %}
+    
+        <button class="btn btn-primary"onclick="approveLeave({{ leave.id }})"><i class="fa fa-check-circle"></i></button>
+
+         <button class="btn btn-danger"onclick="rejectleave({{ leave.id }})"><i class="fa fa-ban"></i></button>
+
+         {% elif leave.approved_status == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+ 
+
+ {% else %}
+       
+<td>
+    {% if leave.approved_status == 0 %}
+    
+       Waiting for Approval
+         {% elif leave.approved_status == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+
+    {% endif %}
+
+
+
+
+
+{%  if  user.role == 'admin' %}
+<td>
+    {% if leave.approved_status_parents == 0 %}
+    
+        <button class="btn btn-primary"onclick="approveLeaveforparents({{ leave.id }})"><i class="fa fa-check-circle"></i></button>
+
+        <button class="btn btn-danger"onclick="rejectleaveforparent({{ leave.id }})"><i class="fa fa-ban"></i></button>
+         {% elif leave.approved_status == 2 %}
+    Rejected
+
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+
+{% else %}
+
+<td>
+    {% if leave.approved_status_parents == 0 %}
+    
+       Waiting for Approval
+         {% elif leave.approved_status_parents == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+
+{% endif %}
+      
+    </tr>  
+
+
+    {% else %}
+     
+
+
+    <tr  {% if leave.apply_by != user.username %} style="display:none" {% endif %}>
+        <td>{{ leave.apply_by }}</td>
+        <td>{{ leave.fromdate }}</td>
+        <td>{{ leave.todate }}</td>
+         <td>{{ leave.reason }}</td>
+
+         {%  if  user.role == 'admin' %}
+         <td>
+    {% if leave.approved_status == 0 %}
+    
+        <button class="btn btn-primary"onclick="approveLeave({{ leave.id }})"><i class="fa fa-check-circle"></i></button>
+
+         <button class="btn btn-danger"onclick="rejectleave({{ leave.id }})"><i class="fa fa-ban"></i></button>
+
+         {% elif leave.approved_status == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+ 
+
+ {% else %}
+       
+<td>
+    {% if leave.approved_status == 0 %}
+    
+       Waiting for Approval
+         {% elif leave.approved_status == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+
+    {% endif %}
+
+
+
+
+
+
+<{%  if  user.role == 'admin' %}
+<td>
+    {% if leave.approved_status_parents == 0 %}
+    
+        <button class="btn btn-primary"onclick="approveLeaveforparents({{ leave.id }})"><i class="fa fa-check-circle"></i></button>
+
+        <button class="btn btn-danger"onclick="rejectleaveforparent({{ leave.id }})"><i class="fa fa-ban"></i></button>
+         {% elif leave.approved_status == 2 %}
+    Rejected
+
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+
+{% else %}
+
+<td>
+    {% if leave.approved_status_parents == 0 %}
+    
+       Waiting for Approval
+         {% elif leave.approved_status_parents == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+</td>
+
+{% endif %}
+
+
+
+
+      
+    </tr>  
+
+
+
+
+
+
+
+
+
+
+
+     {% endif %} 
+    {% endfor %}
+
+</tbody>
+</table>
+
+
+    </div> 
+  </div> 
+
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/media/index.js"></script> 
+ 
+  <script>
+    function approveLeave(leaveId) {
+        $.ajax({
+            url: '/hostelapp/approveleave/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function approveLeaveforparents(leaveId) {
+        $.ajax({
+            url: '/hostelapp/approveleaveforparents/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+
+
+
+<script>
+    function rejectleave(leaveId) {
+        $.ajax({
+            url: '/hostelapp/rejectleaveforadmin/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+
+<script>
+    function rejectleaveforparent(leaveId) {
+        $.ajax({
+            url: '/hostelapp/rejectleaveforparent/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
+
+</body> 
+</html>

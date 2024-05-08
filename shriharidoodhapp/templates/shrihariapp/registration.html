@@ -1,0 +1,409 @@
+
+ <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+  <style>
+    /* annimation */
+    @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600");
+
+:root {
+  --bar-scale-y: 0;
+  --sparkle-color: rgb(253 244 215 / 40%);
+}
+
+
+
+
+.moving-image {
+    position: absolute;
+    left: 0;
+    animation: moveLeft 7s linear infinite; /* Adjust animation duration as needed */
+}
+
+@keyframes moveLeft {
+    from {
+        left: 100%; /* Start from the right edge */
+    }
+    to {
+        right: 100%; /* Move to the left edge */
+    }
+}
+
+
+:root {
+  --bar-scale-y: 0;
+  --sparkle-color: rgb(253 244 215 / 40%);
+}
+
+@keyframes pop-word {
+  to {
+    transform: rotateX(0);
+  }
+}
+
+@keyframes show {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bar-scale {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    transform: scale(0);
+  }
+
+  60% {
+    transform: scale(1) translate(4px, 1px) rotate(8deg);
+  }
+
+  100% {
+    transform: scale(0) translate(4px, 1px) rotate(8deg);
+  }
+}
+
+@keyframes shimmer {
+  to {
+    text-shadow: 0 0 8px red;
+  }
+}
+
+
+h1 {
+  color: black;
+  font-family: "Playfair Display", Vidaloka, serif;
+  font-size: 4rem;
+  line-height: 0.85;
+  perspective: 500px;
+}
+
+.errorlist{
+  color:red;
+  text-align: left;
+}
+
+.word {
+  display: block;
+
+  animation: show 0.01s forwards, pop-word 1.5s forwards;
+  animation-timing-function: cubic-bezier(0.14, 1.23, 0.33, 1.16);
+  opacity: 0;
+
+  transform: rotateX(120deg);
+  transform-origin: 50% 100%;
+}
+
+.word:nth-of-type(2) {
+  padding: 0 2rem;
+
+  animation-delay: 1.5s;
+
+  color: #663103;
+}
+
+.superscript {
+  position: relative;
+  animation-delay: 3.6s;
+
+  animation-duration: 0.25s;
+  animation-name: shimmer;
+
+  vertical-align: text-top;
+}
+
+/* bars */
+.superscript::before {
+  --bar-width: 25%;
+
+  position: relative;
+
+  top: 37%;
+  left: 47%;
+  width: 14%;
+  height: 48%;
+
+  animation: bar-scale 0.25s linear 3s 1 forwards;
+
+  background: linear-gradient(
+    to right,
+    white var(--bar-width),
+    transparent var(--bar-width) calc(100% - var(--bar-width)),
+    white calc(100% - var(--bar-width))
+  );
+
+  content: "";
+
+  transform: scaleY(var(--bar-scale-y));
+}
+
+/* sparkle */
+.superscript::after {
+  --size: 10rem;
+
+  position: absolute;
+
+  top: -5%;
+  left: -85%;
+
+  width: var(--size);
+  height: var(--size);
+
+  animation: sparkle 0.4s linear 3.5s 1 forwards;
+
+  background: radial-gradient(
+      circle at center,
+      rgb(252 249 241 / 94%) 0% 7%,
+      transparent 7% 100%
+    ),
+    conic-gradient(
+      transparent 0deg 18deg,
+      var(--sparkle-color) 18deg,
+      transparent 20deg 40deg,
+      var(--sparkle-color) 40deg,
+      transparent 43deg 87deg,
+      var(--sparkle-color) 87deg,
+      transparent 95deg 175deg,
+      var(--sparkle-color) 175deg,
+      transparent 178deg 220deg,
+      var(--sparkle-color) 220deg,
+      transparent 222deg 270deg,
+      var(--sparkle-color) 270deg,
+      transparent 275deg 300deg,
+      var(--sparkle-color) 300deg,
+      transparent 303deg 360deg
+    );
+
+  border-radius: 50%;
+  clip-path: polygon(
+    50% 0,
+    59.13% 26.64%,
+    85.13% -2.35%,
+    100% 50%,
+    50% 100%,
+    0 50%,
+    31.39% 34.86%
+  );
+
+  content: "";
+
+  filter: blur(1px);
+
+  transform: scale(0);
+}
+
+@media screen and (max-width: 600px) {
+
+  h1 {
+    font-size: 5rem;
+  }
+
+  /* sparkle */
+  .superscript::after {
+    --size: 6rem;
+  }
+}
+
+/* annimation ends */
+    .login-input{
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.2;
+    display: block;
+    width: 100%;
+    height: 45px;
+    padding: 0 5px 0 38px;
+    }
+    .logo-login-page img{
+        padding:8px;
+        border-radius:10px;
+        background: white;
+    }
+    body{
+        width: 100%;
+  height: 100%;
+ 
+    }
+    .logo-image{
+      width:150px;
+      height:120px;
+    }
+    @media(max-width:768px){
+        .login-main-head{
+            display:none;
+        }
+        body{
+    background: white;
+        }
+    }
+
+
+
+</style>
+</head>
+<body>
+ 
+
+
+  <section class="vh-100 gradient-custom">
+        
+        <div class="container" style="margin-top: 3px;">
+              <div class="row">
+            <div class="col-md-3"> <img src="/media/profile_images/milkimg.png" style="margin-top:-100px;"></div>
+            <div class="col-12 col-md-8 col-lg-6 col-xl-6" >
+              <div class="card " style="border-radius: 1rem;border:none ;box-shadow: 0px 3px 8px #264c83; background-color: rgba(255, 255, 255, 0.5);">
+                <div class="card-body p-2 text-center">
+                    <div class="">
+                        <img class="logo-image" src="/media/profile_images/image.png" alt="logo">
+                    </div>
+                  <div class="mb-md-3 mt-md-4 pb-1">
+                    
+      
+                    <div class="form-outline form-white mb-4">
+                        
+  <div class="row mt-4">
+  <div class="col-md-12"> 
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div align="left">
+       {{ form.non_field_errors }}
+    <div class="row">
+        <div class="col-md-6">
+    <div class="form-group">
+      
+        <label for="{{ form.email.id_for_label }}">Full Name:</label>
+
+        <input type="text" class="form-control" name="customer_name" value="{{ form.customer_name.value }}">
+        {% for error in form.customer_name.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+</div>
+ <div class="col-md-6">
+    <div class="form-group">
+        <label for="{{ form.customer_address.id_for_label }}">Address:</label>
+        <input type="text" class="form-control" name="customer_address" value="{{ form.customer_address.value }}">
+    </div>
+</div>
+</div>
+<div class="row mt-2">
+        <div class="col-md-6">
+    <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Username/Email</label>
+        <input type="text" class="form-control" name="username" value="{{ form.username.value }}">
+        {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+
+        {% if messages %}
+   
+        {% for message in messages %}
+            <small{% if message.tags %} class="{{ message.tags }}form-text text-danger"{% endif %}>{{ message }}</small>
+        {% endfor %}
+   
+{% endif %}
+    </div>
+</div>
+<div class="col-md-6">
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Password:</label>
+        <input type="password" class="form-control" name="password1" value="{{ form.password1.value }}">
+        {% for error in form.password1.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+
+</div>
+</div>   
+
+
+
+<div class="row mt-2">
+        <div class="col-md-6">
+    <div class="form-group">
+        <label for="{{ form.phone.id_for_label }}">Phone:</label>
+        <input type="text" class="form-control" name="phone" value="{{ form.phone.value }}">
+        {% for error in form.phone.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+</div>
+<div class="col-md-6">
+
+    <div class="form-group">
+        
+       <input type="hidden" class="form-control" name="role" value="customer">
+
+       
+    </div>
+
+</div>
+
+
+</div>  
+
+
+
+<!-- <div class="row mt-2">
+        <div class="col-md-6">
+    <div class="form-group">
+        <label for="{{ form.phone.id_for_label }}">Upload Adhar Card:</label>
+        <input type="file"  name="adhar_image" accept=".png">
+        {% for error in form.phone.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+</div> -->
+
+
+
+</div>   
+
+
+    <button class="btn btn-primary btn-lg px-5 mt-2" type="submit">Register</button><br> <i>already have account please </i><a href="{% url 'admin_login' %}">login</a>
+
+
+
+  </div>
+</form>
+</div>
+</div>
+
+
+
+      
+                
+      <div>
+                    <div align="right">
+                    <img src="/media/profile_images/img.png" class="moving-image" style="width:20%;margin-top: -50px;"> 
+                    </div>
+                  </div>
+     
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+
+
+         <div class="col-md-3"> <img src="/media/profile_images/mashroom.png" style="margin-top:200px;width: 100%;margin-left: -150px;"></div>
+      </div>
+  </section>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+
+
+ 
+

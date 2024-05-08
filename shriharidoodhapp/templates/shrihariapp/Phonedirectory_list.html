@@ -1,0 +1,130 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+     {%  if  user.role == 'admin' %}
+      <div align="right">
+             <a href="{% url 'create_phonedirectory' %}"> <i class="fa fa-plus"></i> Add Contact</a>
+      </div>
+       {% endif %}
+      <br>
+    <table id="example" class="display nowrap" style="width:100%">
+      <thead>
+        <tr>
+             <th> Created By</th>
+              <th> Photo</th>
+             <th> Name</th>     
+             <th> Position</th>
+             <th> Phone</th>
+             <th> Email</th>
+            
+             
+             <th>Action</th>  
+        </tr>
+
+    </thead>
+    <tbody>
+
+    {% for phone in phones %}
+        <tr>
+            <td>{{ phone.created_by }} </td>
+            <td>{% if phone.photo %}<a href="/media/{{ phone.photo }}" target="_blank"><img    src="/media/{{ phone.photo }}" style="width:50px;height:50px;border-radius: 40px;" ></a>
+                {% else %}<img src="/media/profile_images/noimg.jpg" alt="User Profile Image" style="width:50px;height:50px;border-radius: 40px;">{% endif %}</td>
+            <td>{{ phone.name }} </td>
+            <td>{{ phone.position }} </td>
+            <td>{{ phone.phone }} </td>
+            <td>{{ phone.email }} </td>
+            <td>
+                 {%  if  user.role == 'admin' %}
+                <a href="{% url 'phone_delete' pk=phone.pk %}"><i class="fa fa-trash-o"></i></a>
+                 <a href="{% url 'phone_edit' pk=phone.pk %}"><i class="fa fa-edit"></i></a> </td>
+            {% endif %}
+
+          
+
+            
+        </tr>    
+    {% endfor %}
+
+    </tbody>
+    </table>
+
+
+    </div> 
+  </div> 
+
+      
+      <script src="/media/index.js"></script> 
+ 
+  <script>
+    function resolve(leaveId) {
+        $.ajax({
+            url: '/hostelapp/resolvecomplaint/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); 
+               location.reload(); 
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+
+
+
+ <script>
+    function rejectstudent(leaveId) {
+        $.ajax({
+            url: '/hostelapp/rejectstudent/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+      <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+      <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
+      <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet" />
+      <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+<script type="text/javascript">
+ 
+$(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+         "scrollX": true,
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+  </script>
+
+</body> 
+</html>

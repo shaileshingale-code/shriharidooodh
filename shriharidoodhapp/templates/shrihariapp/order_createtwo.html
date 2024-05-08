@@ -1,0 +1,94 @@
+ {% include 'shrihariapp/navigation.html' %}
+     <div class="main" style="margin-top: -100px;height:120%"> 
+         
+     
+    
+ <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
+           <form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+  {{ form.non_field_errors }}
+
+     <!-- {{ form.as_p }} -->
+    
+    <div class="form-group"  >
+        
+        <!-- <input type="hidden" class="form-control" name="apply_by" value="{{ user.username }}"> -->
+
+         <input type="hidden" class="form-control" name="created_by" value="{% if form.created_by.value is not empty %}{{ form.created_by.value }}{% else %}{{ user.id }}{% endif %}">
+
+
+
+         <input type="hidden" class="form-control" name="package_id" value="{% if form.package_id.value %}{{ form.package_id.value }}{% else %}{{ package_id }}{% endif %}">
+
+           
+
+
+       
+    </div>
+
+    <div class="form-group">
+        <label >Start Date </label>
+        <input type="date" class="form-control" name="start_date" value="{{ form.start_date.value }}" required>
+          
+
+         {% for error in form.start_date.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+
+
+
+
+        
+    </div>
+
+
+    <div class="form-group" style="display:none">
+        <label >customer_plan:</label>
+       
+
+         <select name="customer_plan" class="form-control">
+    <option value="Daily" {% if form.customer_plan.value == 'Daily' %} selected {% endif %}>Daily</option>
+    <option value="Quarterly" {% if form.customer_plan.value == 'Quarterly' %} selected {% endif %}>Quarterly</option>
+    <option value="Weekly" {% if form.customer_plan.value == 'Weekly' %} selected {% endif %}>Weekly</option>
+</select>
+
+
+
+
+        
+    </div>
+
+
+    <div class="form-group" >
+        <label style="display:none">Delievery Address:</label>
+        <input type="hidden" class="form-control" name="delievery_address" value="{{ user.customer_address }}" required>
+
+        {% for error in form.delievery_address.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+ 
+    <button class="btn btn-primary" type="submit">Place Order </button> 
+
+       {% for error in form.created_by.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+
+
+
+
+
+</form>
+
+  
+    </div> 
+  </div> 
+
+  
+
+  <script src="/media/index.js"></script> 
+</body> 
+</html>

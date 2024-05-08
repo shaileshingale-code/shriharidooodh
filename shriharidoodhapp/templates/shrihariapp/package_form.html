@@ -1,0 +1,116 @@
+ {% include 'shrihariapp/navigation.html' %}
+    <div class="main" style="margin-top: -100px;height:120%"> 
+         {{ form.non_field_errors }}
+     
+      <div align="right">
+             <a href="{% url 'package_list' %}"> <i class="fa fa-list"></i> View package</a>
+      </div>
+
+         <form method="post"  enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+     <!-- {{ form.as_p }} -->
+   <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;"> 
+    <div class="form-group">
+        
+        <input type="hidden" class="form-control" name="apply_by" value="{% if form.apply_by.value is not empty %}{{ form.apply_by.value }}{% else %}{{ user.username }}{% endif %}">
+
+
+         {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label >Package Name</label>
+        <input type="text" class="form-control" name="package_name" value="{{ form.package_name.value }}" required>
+
+         {% for error in form.package_name.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+  <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Price:</label>
+        <input type="text" class="form-control" name="package_price" value="{{ form.package_price.value }}" required>
+          {% for error in form.package_price.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Days:</label>
+        <input type="text" class="form-control" name="package_days" value="{{ form.package_days.value }}" required>
+          {% for error in form.package_days.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Gap Days:</label>
+        <input type="text" class="form-control" name="gap_days" value="{{ form.gap_days.value }}" required>
+          {% for error in form.gap_days.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+
+
+    <div class="form-group">
+    <label>Product Name</label>
+    <select name="products" class="form-control product" multiple="true">
+        {% for product in products %}
+            <option value="{{ product.id }}" {% if product.id in form.products.value %} selected {% endif %}>
+                {{ product.product_name }} ({{ product.varient }})
+            </option>
+        {% endfor %}
+    </select>
+    {% for error in form.products.errors %}
+        <small class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+</div>
+
+
+
+ <div class="form-group">
+        <label >Image</label>
+        <input type="file"  name="package_image" value="{{ form.package_image.value }}" >
+ </div>
+   
+
+    <button class="btn btn-primary" type="submit">Add </button> 
+</form>
+
+
+    </div> 
+  </div> 
+</div>
+
+  
+
+  <script src="/media/index.js"></script> 
+  <script src="/media/tinymce/tinymce.min.js"></script>
+
+  <script>tinymce.init({selector:'textarea'});</script>
+
+
+
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+  // Initialize Select2 on your select element
+  $(".product").select2();
+});
+</script>
+</body> 
+</html>

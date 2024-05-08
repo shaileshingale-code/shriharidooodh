@@ -1,0 +1,83 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+         {{ form.non_field_errors }}
+     
+      <div align="right">
+             <a href="{% url 'AttendanceListView' %}"> <i class="fa fa-list"></i> View Attendance </a>
+      </div>
+
+           <form method="post">
+
+    {% csrf_token %}
+
+     <!-- {{ form.as_p }} -->
+    
+    <div class="form-group">
+        
+        <input type="hidden" class="form-control" name="created_by" value="{% if form.created_by.value is not empty %}{{ form.created_by.value }}{% else %}{{ user.username }}{% endif %}">
+
+
+         {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label >Date</label>
+        <input type="date" class="form-control" name="date" value="{{ form.date.value }}" required>
+
+         {% for error in form.date.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+
+
+
+
+
+    <div class="form-group">
+        <label>Student Name</label>
+       <select name="student_name"  class="form-control">
+    {% for student in students %}
+        <option value="{{ student.id }}"   {% if form.student_name.value == student.id %} selected {% endif %}>{{ student.firstname }}  {{ student.lastname }}</option>
+    {% endfor %}
+     </select>
+          {% for error in form.student_name.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+
+
+
+    <div class="form-group">
+        <label>Attendance</label>
+       <select name="status"  class="form-control">
+       <option value="Present"   {% if form.status.value == "Present" %} selected {% endif %}>Present</option>
+       <option value="Absent" {% if form.status.value == "Absent" %} selected {% endif %}> Absent</option>
+     </select>
+          {% for error in form.student_name.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+   
+
+    <button class="btn btn-primary" type="submit">Submit </button> 
+</form>
+
+
+    </div> 
+  </div> 
+
+  
+
+  <script src="/media/index.js"></script> 
+  <script src="/media/tinymce/tinymce.min.js"></script>
+
+  <script>tinymce.init({selector:'textarea'});</script>
+</body> 
+</html>

@@ -1,0 +1,201 @@
+ {% load custom_filters %}
+ {% include 'shrihariapp/navigation.html' %}
+
+
+    <div class="main" style="margin-top: -100px;height:120%"> 
+     
+      <div align="right">
+             <a href="{% url 'add_customer' %}"> <i class="fa fa-plus"></i> Add Customer</a>
+      </div>
+      <br>
+
+      <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
+    <table id="example" class="display nowrap" style="width:100%">
+      <thead>
+        <tr>
+             <th> Customer Name</th>
+             <th> Customer Address</th>     
+             <th> Customer phone</th>
+             <th> Customer email</th>
+             <!-- <th> Package Start Date</th>
+              <th> Status</th> 
+              <th> Package End Date</th>  -->
+
+             <th>Action</th>  
+             <th></th>  
+        </tr>
+
+    </thead>
+    <tbody>
+
+    {% for customer in customers %}
+      
+       <tr {% if customer.role != 'customer' %} style="display:none" {% endif %}>
+            <!-- <tr> -->
+            <td>{{ customer.customer_name }} </td>
+            <td>{{ customer.customer_address }} </td>
+            <td>{{ customer.phone }} </td>
+            <td>{{ customer.username }} </td>
+            
+         
+<!-- {% load custom_filters %}
+
+{% if customer.customer_plan == 'Weekly' %}
+    {% if customer.package %}
+        {% with days=customer.package.package_days|mul:7 %}
+            {% with final_date=customer.start_date|add_days:days %}
+                <td>{{ customer.start_date }}</td>
+               {% if final_date <= today %}
+                   <td><span style="background-color: red;padding:4px;color:white">Inactiva </span></td>
+                {% else %}
+                    <td><span style="background-color: green;padding:4px;color:white">Active</span></td>
+                {% endif %}
+                <td>{{ final_date }}</td>
+            {% endwith %}
+        {% endwith %}
+    {% else %}
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>N/A</td>
+    {% endif %}
+{% elif customer.customer_plan == 'Quarterly' %}
+    {% if customer.package %}
+        {% with days=customer.package.package_days|mul:4 %}
+            {% with final_date=customer.start_date|add_days:days %}
+                <td>{{ customer.start_date }}</td>
+               {% if final_date <= today %}
+                    <td><span style="background-color: red;padding:4px;color:white">Inactiva </span></td>
+                {% else %}
+                    <td><span style="background-color: green;padding:4px;color:white">Active</span></td>
+                {% endif %}
+                <td>{{ final_date }}</td>
+            {% endwith %}
+        {% endwith %}
+    {% else %}
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>N/A</td>
+    {% endif %}
+{% else %}
+    {% if customer.package %}
+        {% with final_date=customer.start_date|add_days:customer.package.package_days %}
+            <td>{{ customer.start_date }}</td>
+            {% if final_date <= today %}
+                    <td><span style="background-color: red;padding:4px;color:white">Inactiva </span></td>
+                {% else %}
+                    <td><span style="background-color: green;padding:4px;color:white">Active</span></td>
+                {% endif %}
+            <td>{{ final_date }}</td>
+        {% endwith %}
+    {% else %}
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>N/A</td>
+    {% endif %}
+{% endif %} -->
+
+
+
+
+
+
+
+
+     
+
+            <td><a href="{% url 'customer_delete' pk=customer.pk %}"><i class="fa fa-trash-o"></i></a>
+                 <a href="{% url 'customer_edit' pk=customer.pk %}"><i class="fa fa-edit"></i></a>
+                 <!-- <a href="{% url 'change_details' pk=customer.pk %}"><i class="fa fa-edit" title="change login details"></i></a> -->
+             </td> 
+             <td>
+                 <a href="{% url 'change_details' pk=customer.pk %}">Change Password</a>
+             </td> 
+        </tr> 
+
+        
+    {% endfor %}
+
+    </tbody>
+    </table>
+
+   </div>
+    </div> 
+  </div> 
+
+      
+      <script src="/media/index.js"></script> 
+ 
+  <script>
+    function resolve(leaveId) {
+        $.ajax({
+            url: '/hostelapp/resolvecomplaint/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); 
+               location.reload(); 
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+
+
+
+ <script>
+    function rejectstudent(leaveId) {
+        $.ajax({
+            url: '/hostelapp/rejectstudent/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+      <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+      <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
+      <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet" />
+      <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+<script type="text/javascript">
+ 
+$(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+         "scrollX": true,
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+  </script>
+
+</body> 
+</html>

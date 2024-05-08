@@ -1,0 +1,85 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+         {{ form.non_field_errors }}
+     
+      <div align="right">
+             <a href="{% url 'facility_request' %}"> <i class="fa fa-list"></i> View Request</a>
+      </div>
+
+           <form method="post">
+
+    {% csrf_token %}
+
+     <!-- {{ form.as_p }} -->
+    
+    <div class="form-group">
+        
+        <input type="hidden" class="form-control" name="created_by" value="{% if form.created_by.value is not empty %}{{ form.created_by.value }}{% else %}{{ user.username }}{% endif %}">
+
+
+         {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label >Date</label>
+        <input type="date" class="form-control" name="date" value="{{ form.date.value }}" required>
+
+         {% for error in form.date.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label >Facility</label>
+       
+
+        <select type="text" class="form-control" name="facility" value="{{ form.facility.value }}" required>
+             <option value="">Please select</option>
+             <option value="Projector" {% if form.facility.value == 'Projector' %} selected {% endif %}>Projector</option>
+    <option value="TT Racket" {% if form.facility.value == 'TT Racket' %} selected {% endif %}>TT Racket</option>
+    <option value="Carrom" {% if form.facility.value == 'Carrom' %} selected {% endif %}>Carrom</option>
+    <option value="Cricket Bat" {% if form.facility.value == 'Cricket Bat' %} selected {% endif %}>Cricket Bat</option>
+    <option value="Heating Rod" {% if form.facility.value == 'Heating Rod' %} selected {% endif %}>Heating Rod</option>
+    <option value="Iron" {% if form.facility.value == 'Iron' %} selected {% endif %}>Iron</option>
+    <option value="HDMI Cable" {% if form.facility.value == 'HDMI Cable' %} selected {% endif %}>HDMI Cable</option>
+    
+        </select>
+
+        {% for error in form.facility.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Description:</label>
+
+
+        <textarea  name="desc" value="{{ form.desc.value }}" required>{{ form.desc.value }}</textarea>
+
+          {% for error in form.desc.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+          {% endfor %}
+        
+    </div>
+
+   
+
+    <button class="btn btn-primary" type="submit">Apply </button> 
+</form>
+
+
+    </div> 
+  </div> 
+
+  
+
+  <script src="/media/index.js"></script> 
+  <script src="/media/tinymce/tinymce.min.js"></script>
+
+  <script>tinymce.init({selector:'textarea'});</script>
+</body> 
+</html>

@@ -1,0 +1,195 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+     
+      <div align="right">
+             <a href="{% url 'hostel_facility' %}"> <i class="fa fa-plus"></i> Request Facility</a>
+      </div>
+      <br>
+    <table id="example" class="display nowrap" style="width:100%">
+      <thead>
+        <tr>
+             <th> Requested By</th>
+             <th> Name of Facility</th>     
+             <th> Description</th>
+             <th> Date</th>
+             <th> Admin Status</th>
+             <th>Action</th>  
+        </tr>
+
+    </thead>
+    <tbody>
+
+    {% for request in requests %}
+
+    {%  if  user.role == 'admin' %}
+        <tr>
+            <td>{{ request.created_by }} </td>
+            <td>{{ request.facility }} </td>
+            <td>{{ request.desc }} </td>
+            <td>{{ request.date }} </td>
+            <td>
+    {% if request.approved_status == 0 %}
+    
+        <button class="btn btn-primary"onclick="approverequest({{ request.id }})" title="approve"><i class="fa fa-check-circle"></i></button>
+
+        <button class="btn btn-danger"onclick="rejectrequest({{ request.id }})" title="reject"><i class="fa fa-ban"></i></button>
+
+   {% elif request.approved_status == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+
+         
+    
+</td>
+            <td><a href="{% url 'request_delete' pk=request.pk %}"><i class="fa fa-trash-o"></i></a>
+                 <a href="{% url 'request_edit' pk=request.pk %}"><i class="fa fa-edit"></i></a></td> 
+        </tr> 
+{% else %}
+
+
+        <tr  {% if request.created_by != user.username %} style="display:none" {% endif %}>
+            <td>{{ request.created_by }} </td>
+            <td>{{ request.facility }} </td>
+            <td>{{ request.desc }} </td>
+            <td>{{ request.date }} </td>
+           
+        {%  if  user.role == 'admin' %}
+            <td>
+    {% if request.approved_status == 0 %}
+    
+        <button class="btn btn-primary"onclick="approverequest({{ request.id }})" title="approve"><i class="fa fa-check-circle"></i></button>
+
+        <button class="btn btn-danger"onclick="rejectrequest({{ request.id }})" title="reject"><i class="fa fa-ban"></i></button>
+
+   {% elif request.approved_status == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+
+         
+    
+</td>
+
+ {% else %}
+
+<td>
+    {% if request.approved_status == 0 %}
+    
+       Requested
+
+   {% elif request.approved_status == 2 %}
+    Rejected
+    {% else %}
+        Approved
+    {% endif %}
+
+         
+    
+</td>
+
+ {% endif %}
+            <td>
+                <!-- <a href="{% url 'request_delete' pk=request.pk %}"><i class="fa fa-trash-o"></i></a>
+                 <a href="{% url 'request_edit' pk=request.pk %}"><i class="fa fa-edit"></i></a> -->
+             </td> 
+        </tr> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {% endif %}       
+    {% endfor %}
+
+    </tbody>
+    </table>
+
+
+    </div> 
+  </div> 
+
+      
+      <script src="/media/index.js"></script> 
+ 
+  <script>
+    function approverequest(leaveId) {
+        $.ajax({
+            url: '/hostelapp/approvefacility/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+ <script>
+    function rejectrequest(leaveId) {
+        $.ajax({
+            url: '/hostelapp/rejectfacility/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+      <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+      <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
+      <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet" />
+      <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+<script type="text/javascript">
+ 
+$(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+         "scrollX": true,
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+  </script>
+
+</body> 
+</html>

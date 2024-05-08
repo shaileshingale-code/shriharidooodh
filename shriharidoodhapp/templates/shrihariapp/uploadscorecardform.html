@@ -1,0 +1,86 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+         {{ form.non_field_errors }}
+     
+      <div align="right">
+             <a href="{% url 'scorecard_list' %}"> <i class="fa fa-list"></i> Scorecard List</a>
+      </div>
+
+           <form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+     <!-- {{ form.as_p }} -->
+    
+    <div class="form-group"  >
+        
+        <!-- <input type="hidden" class="form-control" name="apply_by" value="{{ user.username }}"> -->
+
+         <input type="hidden" class="form-control" name="created_by" value="{% if form.created_by.value is not empty %}{{ form.created_by.value }}{% else %}{{ user.username }}{% endif %}">
+
+          
+
+         {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label >Course Name</label>
+        <input type="text" class="form-control" name="course_name" value="{{ form.course_name.value }}" required>
+           
+
+         {% for error in form.course_name.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label >Semister:</label>
+        <input type="text" class="form-control" name="semister" value="{{ form.semister.value }}" required>
+
+        {% for error in form.semister.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Remark</label>
+    <textarea  name="remark" value="{{ form.remark.value }}" required>{{form.remark.value }}</textarea>
+          {% for error in form.remark.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+
+   
+
+
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Document</label>
+        <input type="file"  name="scorecard_image" value="{{ form.scorecard_image.value }}" accept=".pdf, .doc, .xlsx">
+         
+        
+    </div>
+
+   
+
+    <button class="btn btn-primary" type="submit">Upload </button> 
+</form>
+
+
+    </div> 
+  </div> 
+
+  
+
+  <script src="/media/index.js"></script> 
+  <script src="/media/tinymce/tinymce.min.js"></script>
+
+  <script>tinymce.init({selector:'textarea'});</script>
+</body> 
+</html>

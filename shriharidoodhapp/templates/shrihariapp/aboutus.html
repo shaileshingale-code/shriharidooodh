@@ -1,0 +1,70 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+         {{ form.non_field_errors }}
+     
+    <!--   <div align="right">
+             <a href="{% url 'FineListView' %}"> <i class="fa fa-list"></i> View Fine List</a>
+      </div> -->
+
+           <form method="post">
+
+    {% csrf_token %}
+
+     <!-- {{ form.as_p }} -->
+    
+    <div class="form-group">
+        
+        <input type="hidden" class="form-control" name="created_by" value="{% if form.created_by.value is not empty %}{{ form.created_by.value }}{% else %}{{ user.username }}{% endif %}">
+
+
+         {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+
+    
+
+    
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">About US</label>
+        <textarea name="desc" value="{{ form.desc.value }}" required>{{ form.desc.value }}</textarea>
+          {% for error in form.desc.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+
+
+
+   <!--  <div class="form-group">
+        <label>Student Name</label>
+       <select name="student_name"  class="form-control">
+    {% for about in abouts %}
+        <option value="{{ student.id }}"   {% if form.student_name.value == student.id %} selected {% endif %}>{{ student.firstname }}  {{ student.lastname }}</option>
+    {% endfor %}
+     </select>
+          {% for error in form.student_name.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div> -->
+
+   
+
+    <button class="btn btn-primary" type="submit">Apply </button> 
+</form>
+
+
+    </div> 
+  </div> 
+
+  
+
+  <script src="/media/index.js"></script> 
+  <script src="/media/tinymce/tinymce.min.js"></script>
+
+  <script>tinymce.init({selector:'textarea'});</script>
+</body> 
+</html>

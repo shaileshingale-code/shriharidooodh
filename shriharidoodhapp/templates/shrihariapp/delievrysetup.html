@@ -1,0 +1,125 @@
+ {% include 'shrihariapp/navigation.html' %}
+    <div class="main" style="margin-top: -100px;height:120%"> 
+
+         {{ form.non_field_errors }}
+     
+      <div align="right">
+             <a href="{% url 'Delievery_list' %}"> <i class="fa fa-list"></i> Dilevery List</a>
+      </div>
+                  <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
+           <form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+     <!-- {{ form.as_p }} -->
+    
+    <div class="form-group"  >
+        
+      
+
+         <input type="hidden" class="form-control" name="created_by" value="{% if form.created_by.value is not empty %}{{ form.created_by.value }}{% else %}{{ user.username }}{% endif %}">
+
+
+         
+
+        
+          
+
+         {% for error in form.username.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+   <div class="row">
+    <div class="form-group col-md-6">
+        <label >Delievery Boy</label>
+        <select name="Delivery_Boy"  class="form-control">
+            <option value="">Please Select</option>
+    {% for customer in customers %}
+        <option   {% if customer.role != 'DeliveryBoy' %} style="display:none" {% endif %} value="{{ customer.id }}"   {% if form.Delivery_Boy.value == customer.id %} selected {% endif %}>{{ customer.customer_name }}</option>
+    {% endfor %}
+     </select>
+
+         {% for error in form.Delivery_Boy.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+
+
+    <div class="form-group col-md-6" style="display:none">
+        <label >Order </label>
+         <select name="orderid"  class="form-control">
+            <option value="">Please Select</option>
+    {% for orders in orderss %}
+        <option value="{{ orders.id }}"   {% if form.orderid.value == orders.id %} selected {% endif %}>{{ orders.created_by.customer_name }}({{orders.product_id.product_name }},{{orders.product_id.varient }})</option>
+    {% endfor %}
+     </select>
+
+        {% for error in form.orderid.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+       
+    </div>
+</div>
+ <div class="row">
+     <div class="form-group col-md-6">
+        <label>Daily Order </label>
+       <select name="daily_order_id"  class="form-control">
+        <option value="">Please Select</option>
+    {% for dailyorders in dailyorderss %}
+        <option value="{{ dailyorders.id }}"   {% if form.daily_order_id.value == dailyorders.id %} selected {% endif %}>{{ dailyorders.created_by.customer_name }}({{dailyorders.package_id.package_name }})</option>
+    {% endfor %}
+     </select>
+          {% for error in form.package.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+    
+</div>
+
+<div class="row">
+     <div class="form-group col-md-6">
+        <label>Date </label>
+       <input type="date" name="Date"  class="form-control">
+   
+          {% for error in form.Date.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
+    
+</div>
+<div class="row">
+   
+</div>
+
+ <div class="row">
+
+   
+    
+
+
+
+
+    
+
+
+
+
+    <button class="btn btn-primary" type="submit">Submit </button> 
+</form>
+  </div>
+
+    </div> 
+  </div> 
+
+  
+
+  <script src="/media/index.js"></script> 
+  <script src="/media/tinymce/tinymce.min.js"></script>
+
+  <script>tinymce.init({selector:'textarea'});</script>
+</body> 
+</html>

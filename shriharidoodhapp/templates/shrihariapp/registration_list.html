@@ -1,0 +1,118 @@
+ {% include 'employeeapp/navigation.html' %}
+    <div class="main"> 
+     
+      <div align="right">
+             <a href="{% url 'leave_apply' %}"> <i class="fa fa-plus"></i> Registration Application</a>
+      </div>
+      <br>
+           <table class="table">
+    <thead>
+      <tr>
+         <th> Name</th>
+         <th> Phone</th>
+          <th> Email</th>
+         <th> Role</th>
+         <th> Adhar Cared</th>
+          
+         <th>Approve status</th>  
+         <th>Action</th>  
+      </tr>
+
+    </thead>
+    <tbody>
+
+    {% for employee in employees %}
+    <tr>
+        <td>{{ employee.firstname }} &nbsp;{{ employee.lastname }}</td>
+      
+         <td>{{ employee.phone }} </td>
+          <td>{{ employee.username }} </td>
+            <td>{{ employee.role }} </td>
+            <td><a href="/media/{{ employee.adhar_image }}" target="_blank"><img src="/media/{{ employee.adhar_image }}" style="width:100%;height:50px;" ></a> </td>
+        
+
+<td>
+    {% if employee.approved_status == 0 %}
+    
+        <button class="btn btn-primary"onclick="approvestudent({{ employee.id }})" title="approve"><i class="fa fa-check-circle"></i></button>
+
+   {% else %}
+
+         <button class="btn btn-danger"onclick="rejectstudent({{ employee.id }})" title="reject"><i class="fa fa-ban"></i></button>
+    {% endif %} 
+</td>
+<td>
+    
+
+    <a href="{% url 'employee_delete' pk=employee.pk %}">Delete</a>
+</td>
+
+
+
+
+      
+    </tr>    
+    {% endfor %}
+
+</tbody>
+</table>
+
+
+    </div> 
+  </div> 
+
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/media/index.js"></script> 
+ 
+  <script>
+    function approvestudent(leaveId) {
+        $.ajax({
+            url: '/hostelapp/approvestudent/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+
+
+
+ <script>
+    function rejectstudent(leaveId) {
+        $.ajax({
+            url: '/hostelapp/rejectstudent/',
+            type: 'POST',
+            data: {
+                'leave_id': leaveId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); // Display success message
+               location.reload(); // Reload the page
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script>
+
+
+
+
+</body> 
+</html>
