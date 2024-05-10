@@ -46,24 +46,28 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.password1.id_for_label }}">MRP:</label>
-        <input type="text" class="form-control" name="mrpprice" value="{{ form.mrpprice.value }}" required>
-          {% for error in form.mrpprice.errors %}
-            <small class="form-text text-danger">{{ error }}</small>
-        {% endfor %}
-        
-    </div>
+    <label for="{{ form.mrpprice.id_for_label }}">MRP:</label>
+    <input type="text" class="form-control" id="mrpprice" name="mrpprice" value="{{ form.mrpprice.value }}" required>
+    {% for error in form.mrpprice.errors %}
+    <small class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+</div>
 
+<div class="form-group">
+    <label for="{{ form.discount.id_for_label }}">Discount (percentage):</label>
+    <input type="text" class="form-control" id="discount" name="discount" value="{{ form.discount.value }}" required>
+    {% for error in form.discount.errors %}
+    <small class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+</div>
 
-
-    <div class="form-group">
-        <label for="{{ form.password1.id_for_label }}">Sale Price:</label>
-        <input type="text" class="form-control" name="saleprice" value="{{ form.saleprice.value }}" required>
-          {% for error in form.saleprice.errors %}
-            <small class="form-text text-danger">{{ error }}</small>
-        {% endfor %}
-        
-    </div>
+<div class="form-group">
+    <label for="{{ form.saleprice.id_for_label }}">Sale Price:</label>
+    <input type="text" class="form-control" id="saleprice" name="saleprice" value="{{ form.saleprice.value }}" required readonly>
+    {% for error in form.saleprice.errors %}
+    <small class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+</div>
 
     
     <div class="form-group">
@@ -101,5 +105,27 @@
   
 
   <script src="/media/index.js"></script> 
+
+  <script>
+    // Get input elements
+    var mrpInput = document.getElementById("mrpprice");
+    var discountInput = document.getElementById("discount");
+    var salePriceInput = document.getElementById("saleprice");
+
+    // Add event listeners for input change
+    mrpInput.addEventListener("input", updateSalePrice);
+    discountInput.addEventListener("input", updateSalePrice);
+
+    function updateSalePrice() {
+        var mrpPrice = parseFloat(mrpInput.value);
+        var discountPercent = parseFloat(discountInput.value);
+
+        // Calculate sale price
+        var salePrice = mrpPrice - (mrpPrice * (discountPercent / 100));
+
+        // Update sale price input value
+        salePriceInput.value = salePrice.toFixed(2);
+    }
+</script>
 </body> 
 </html>

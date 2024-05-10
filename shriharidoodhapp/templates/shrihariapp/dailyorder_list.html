@@ -10,7 +10,11 @@
       <br>
 
       <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
+        {%  if  user.role == 'admin' %}
     <table id="example" class="display nowrap" style="width:100%">
+         {% else %}
+    <table class="table" style="width:100%">     
+         {% endif %} 
       <thead>
         <tr>
              <th> Customer Name</th>
@@ -34,7 +38,7 @@
     {%  if  user.role == 'admin' %}
       
         <tr>
-            <td>{{ order.created_by.customer_name }} </td>
+            <td>{% if order.approved_status == 2 %} <i class="fa-solid fa-circle-exclamation fa-shake" style="color:red"></i>{% endif %} &nbsp;{{ order.created_by.customer_name }}  </td>
             <td>{{ order.delievery_address }}</td>
             <td>{{ order.package_id.package_name }}</td>
             <td>{{ order.customer_plan }} </td>
@@ -68,6 +72,12 @@
                  {% if order.approved_status == 0 %}
         
                  <button class="btn btn-primary"onclick="stop({{ order.id }})" title="to bepause"><i class="fa-solid fa-pause"></i></button>
+                 {% elif order.approved_status == 2 %}
+
+
+                  <button class="btn btn-danger" onclick="stop({{ order.id }})" title="Request for pause"> <i class="fa-solid fa-circle-exclamation fa-shake" style="color:white"></i> </button>
+
+
 
                 {% else %}
 
@@ -101,15 +111,17 @@
             
             
             <td>
-                 <a href="{% url 'order_delete' pk=order.pk %}"><i class="fa fa-trash-o"></i></a>
-                 <a href="{% url 'order_edit' pk=order.pk %}"><i class="fa fa-edit"></i></a>
-            </td> 
+                <!--  <a href="{% url 'order_delete' pk=order.pk %}"><i class="fa fa-trash-o"></i></a>
+                 <a href="{% url 'order_edit' pk=order.pk %}"><i class="fa fa-edit"></i></a> -->
 
-
-            <td>
-                 {% if order.approved_status == 0 %}
+                  {% if order.approved_status == 0 %}
         
-                 <button class="btn btn-primary"onclick="stop({{ order.id }})" title="Pause"><i class="fa-solid fa-pause"></i></button>
+                 <button class="btn btn-primary"onclick="stopforcustomer({{ order.id }})" title="Pause"><i class="fa-solid fa-pause"></i></button>
+
+                 {% elif order.approved_status == 2 %}
+
+                <button class="btn btn-primary" title="Pause"><i class="fa-solid fa-pause" disabled></i></button>
+
 
                 {% else %}
 
@@ -117,6 +129,11 @@
 
                 
                 {% endif %} 
+            </td> 
+
+
+            <td>
+                
             </td> 
         </tr> 
 
@@ -135,7 +152,7 @@
  
  
 
- <script>
+ <!-- <script>
     function stop(orderId) {
         $.ajax({
             url: '/shriharidoodhapp/stop/',
@@ -154,11 +171,93 @@
             }
         });
     }
+</script> -->
+
+<script>
+    function stop(orderId) {
+        // Display alert message
+        alert("Thank You !. Action will be taken after 24 hours. for more info please contact to admin");
+
+        // Make AJAX request to pause the order
+        $.ajax({
+            url: '/shriharidoodhapp/stop/',
+            type: 'POST',
+            data: {
+                'order_id': orderId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); 
+               location.reload(); 
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to pause order:', err);
+            }
+        });
+    }
 </script>
 
 
+
+
+<script>
+    function stopforcustomer(orderId) {
+        // Display alert message
+        alert("Thank You !. Action will be taken after 24 hours. for more info please contact to admin");
+
+        // Make AJAX request to pause the order
+        $.ajax({
+            url: '/shriharidoodhapp/stopforcustomer/',
+            type: 'POST',
+            data: {
+                'order_id': orderId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); 
+               location.reload(); 
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to pause order:', err);
+            }
+        });
+    }
+</script>
+<!-- <script>
+    function resume(leaveIdd) {
+        $.ajax({
+            url: '/shriharidoodhapp/resume/',
+            type: 'POST',
+            data: {
+                'leave_idd': leaveIdd,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+               alert(response.message); 
+               location.reload(); 
+            },
+            error: function(xhr, errmsg, err) {
+                // Handle error response
+                console.error('Failed to approve leave:', err);
+            }
+        });
+    }
+</script> -->
+
 <script>
     function resume(leaveIdd) {
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+
+        // Check if the current time is after 3 PM
+        if (hours >= 18) {
+            alert("Please try between 10 AM to 3 PM.");
+            return; // Exit the function
+        }
+
+        // Proceed with the AJAX request
         $.ajax({
             url: '/shriharidoodhapp/resume/',
             type: 'POST',
@@ -203,6 +302,11 @@ $(document).ready(function() {
     } );
 } );
   </script>
+
+
+
+
+
 
 </body> 
 </html>

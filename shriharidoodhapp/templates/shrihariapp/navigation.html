@@ -48,6 +48,20 @@
 
     <style>
       a{ color:#383C3F }
+
+
+      @media screen and (max-width: 600px) {
+  .main {
+    margin-top: 0px !important;
+    height:100% !important;
+  }
+
+  .navcontainer {
+    width:50vw !important;
+  }
+
+  header{width:100% !important;}
+}
     </style>
 
   </header> 
@@ -55,13 +69,17 @@
   <div class="main-container" > 
     <div class="navcontainer" style="background-image: linear-gradient(to right, #f7f7f7  0%, #dce8f4   70%);"> 
       <nav class="nav"> 
-        <div class="nav-upper-options"> 
+      
+        <div class="nav-upper-options">
+         {%  if  user.role == 'admin' %} 
           <div class="nav-option active"> 
             <svg class="nav-img"
             alt="dashboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>
               
             <h3> Dashboard</h3> 
           </div> 
+          
+          {% endif %}
 
           
  <!-- 

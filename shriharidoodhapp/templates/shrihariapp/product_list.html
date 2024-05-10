@@ -13,12 +13,21 @@
  <div class="row">
     {% for product in products %}
 
+    <!-- <script>
+    calculateDiscount('{{ product.mrpprice }}', '{{ product.saleprice }}', {{ product.pk }});
+    </script> -->
+
+    {%  if  user.role == 'customer' %}
+
      <div class="col-md-4" >
+
+           
+            <a href="{% url 'order_create' product_id=product.pk %}">
             <div style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:40px;margin-left: 10px;height:450px">
            <div style="text-align: center;">
 
             <div align="center">
-            {% if product.product_image %}<a href="/media/{{ product.product_image }}" target="_blank"><img    src="/media/{{ product.product_image }}" style="width:100px;height:100px;border-radius: 100%;" ></a>
+            {% if product.product_image %}<img    src="/media/{{ product.product_image }}" style="width:100px;height:100px;border-radius: 100%;" >
                 {% else %}{% endif %}
             </div>
              <br><br>
@@ -27,7 +36,7 @@
             <h6>{{ product.varient }} </h6>
             <h6>{{ product.description }} </h6>
            <h6><del>Price: {{ product.mrpprice }}</del>
-                   <strong><span id="discount"></span></strong>
+                   <strong>{{ product.discount }} %</strong>
            </h6>
            
            <h6><strong>Sale Price: {{ product.saleprice }}</strong></h6>
@@ -55,18 +64,61 @@
 
      </div>  
      </div>
+ </a>
      </div>  
 
-     <script>
-  // Calculate discount percentage
-  var mrpPrice = parseFloat('{{ product.mrpprice }}');
-  var salePrice = parseFloat('{{ product.saleprice }}');
-  var discountPercentage = ((mrpPrice - salePrice) / mrpPrice) * 100;
 
-  // Display discount percentage
-  var discountElement = document.getElementById("discount");
-  discountElement.innerHTML = "Save: " + discountPercentage.toFixed(2) + "%";
-</script>
+
+     {% else %}
+
+      <div class="col-md-4" >
+
+           
+
+            <div style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:40px;margin-left: 10px;height:450px">
+           <div style="text-align: center;">
+
+            <div align="center">
+            {% if product.product_image %}<img    src="/media/{{ product.product_image }}" style="width:100px;height:100px;border-radius: 100%;" >
+                {% else %}{% endif %}
+            </div>
+             <br><br>
+         
+            <h2>{{ product.product_name }} </h2>
+            <h6>{{ product.varient }} </h6>
+            <h6>{{ product.description }} </h6>
+           <h6><del>Price: {{ product.mrpprice }}</del>
+                   <strong>Save {{ product.discount }} %</strong>
+           </h6>
+           
+           <h6><strong>Sale Price: {{ product.saleprice }}</strong></h6>
+           <br>
+            
+                   {%  if  user.role == 'admin' %}
+            <h6>
+                <a href="{% url 'product_delete' pk=product.pk %}"><i class="fa fa-trash-o"></i></a>
+                 <a href="{% url 'product_edit' pk=product.pk %}"><i class="fa fa-edit"></i></a>
+                    {% endif %}</h6>
+
+
+
+                     {%  if  user.role == 'customer' %}
+            <h6>
+               <a href="{% url 'order_create' product_id=product.pk %}">
+    <button class="btn btn-primary" style="background-color: #083D27; border:none">
+        <i class="fa-solid fa-cart-shopping fa-beat"></i> Buy Now
+    </button>
+</a>
+                 
+                    {% endif %}</h6>
+
+
+
+     </div>  
+     </div>
+     </div> 
+{% endif %}
+     
          
        
     {% endfor %}
@@ -153,7 +205,21 @@ $(document).ready(function() {
 } );
   </script>
 
+<script>
+  
+ function calculateDiscount(mrpPrice, salePrice, productId) {
+    mrpPrice = parseFloat(mrpPrice);
+    salePrice = parseFloat(salePrice);
+  // var discountPercentage = ((mrpPrice - salePrice) / mrpPrice) * 100;
 
+  var discountPercentagetwo = mrpPrice - (mrpPrice * (salePrice / 100));
+
+  var discountPercentage = Math.round(discountPercentagetwo);
+
+   var discountElement = document.getElementById("discount_" + productId);
+  discountElement.innerHTML = "" + discountPercentage.toFixed(2) + "";
+}
+</script>
   
 </body> 
 </html>

@@ -11,14 +11,17 @@
 
     {% for package in packages %}
    
-    
+        {%  if  user.role == 'customer' %}
 
+       
+         
         <div class="col-md-4" >
+             <a href="{% url 'order_createtwo' package_id=package.pk %}">
             <div style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:40px;margin-left: 10px;height:440px">
            <div style="text-align: justify-all;">
 
             <div align="center">
-            {% if package.package_image %}<a href="/media/{{ package.package_image }}" target="_blank"><img    src="/media/{{ package.package_image }}" style="width:100px;height:100px;border-radius: 100%;" ></a>
+            {% if package.package_image %}<img    src="/media/{{ package.package_image }}" style="width:100px;height:100px;border-radius: 100%;" >
                 {% else %}{% endif %}
             </div>
             <br><br>
@@ -29,12 +32,12 @@
                     {{ product.product_name }}( {{ product.varient }}),
                 {% endfor %} </h6>
            <h6><b> Days: </b>{{ package.package_days }}  </h4> 
-          <h6><b> gap: </b>{{ package.gap_days }}  </h4> 
+          <!-- <h6><b> gap: </b>{{ package.gap_days }}  </h4>  -->
             <br><br>
             <div align="center">
                 {%  if  user.role == 'admin' %}
             <h6> 
-                 <a href="{% url 'package_delete' pk=package.pk %}"><i class="fa fa-trash-o"></i></a>
+                 <a href="#" onclick="confirmDelete('{{ package.pk }}')"><i class="fa fa-trash-o"></i></a>
                  <a href="{% url 'package_edit' pk=package.pk %}"><i class="fa fa-edit"></i></a>
 
              </h6>
@@ -56,7 +59,78 @@
 
         </div>
     </div>
+</a>
+     
+
+
+
+
+
+
+
+             {%  else %}
+
+       
+         
+        <div class="col-md-4" >
+            <div style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:40px;margin-left: 10px;height:440px">
+           <div style="text-align: justify-all;">
+
+            <div align="center">
+            {% if package.package_image %}<img    src="/media/{{ package.package_image }}" style="width:100px;height:100px;border-radius: 100%;" >
+                {% else %}{% endif %}
+            </div>
+            <br><br>
+           <h6><b> Package Name: </b> {{ package.package_name }} </h6>
+           <h6> <b>Price : </b>{{ package.package_price }} </h4>
+           <h6> <b> Products:</b>
+                {% for product in package.products.all %}
+                    {{ product.product_name }}( {{ product.varient }}),
+                {% endfor %} </h6>
+           <h6><b> Days: </b>{{ package.package_days }}  </h4> 
+          <!-- <h6><b> gap: </b>{{ package.gap_days }}  </h4>  -->
+            <br><br>
+            <div align="center">
+                {%  if  user.role == 'admin' %}
+            <h6> 
+                 <!-- <a href="{% url 'package_delete' pk=package.pk %}"><i class="fa fa-trash-o"></i></a> -->
+                 <a href="#" onclick="confirmDelete('{{ package.pk }}')"><i class="fa fa-trash-o"></i></a>
+                 <a href="{% url 'package_edit' pk=package.pk %}"><i class="fa fa-edit"></i></a>
+
+             </h6>
+
+                {% endif %}
+
+             {%  if  user.role == 'customer' %}
+            <h6>
+               <a href="{% url 'order_createtwo' package_id=package.pk %}">
+    <button class="btn btn-primary" style="background-color: #083D27; border:none">
+        <i class="fa-solid fa-cart-shopping fa-beat"></i> Buy Now
+    </button>
+    </a>
+                 
+                    {% endif %}</h6>
+            </div>
+   
+           </div>
+
+        </div>
+    </div>
+   
+   {% endif %}  
+
+
+   <script>
+    function confirmDelete(packageId) {
+        if (confirm("All orders with this package will be deleted. Please take backup of orders in Excel. Are you sure you want to delete?")) {
            
+             window.location.href = "{% url 'package_delete' pk=package.pk %}";
+        } else {
+            
+            return false;
+        }
+    }
+</script>
        
     {% endfor %}
 
@@ -137,6 +211,9 @@ $(document).ready(function() {
     } );
 } );
   </script>
+
+
+
 
 </body> 
 </html>

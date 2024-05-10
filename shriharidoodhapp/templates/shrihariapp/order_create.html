@@ -27,7 +27,7 @@
 
     <div class="form-group">
         <label >Order Date</label>
-        <input type="date" class="form-control" name="order_date" value="{{ form.order_date.value }}" required>
+        <input id="booking-date" type="date" class="form-control" name="order_date" value="{{ form.order_date.value }}" required>
           
 
          {% for error in form.order_date.errors %}
@@ -87,5 +87,30 @@
   
 
   <script src="/media/index.js"></script> 
+
+  <script>
+    function updateBookingDate() {
+        // var typeSelect = document.getElementById("select-type");
+        var bookingDateInput = document.getElementById("booking-date");
+        // var selectedType = typeSelect.value;
+        var today = new Date();
+        var currentHour = today.getHours();
+
+     
+            if (currentHour >= 18) {
+                // Add one day to today's date
+                today.setDate(today.getDate() + 1);
+            }
+        
+
+        // Set the min attribute of the booking date input
+        var minDate = today.toISOString().split("T")[0];
+        bookingDateInput.min = minDate;
+        bookingDateInput.value = minDate; // Set the initial value to the calculated min date
+    }
+
+    // Call the updateBookingDate function on page load (if needed)
+    updateBookingDate();
+</script>
 </body> 
 </html>
