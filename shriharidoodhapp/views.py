@@ -124,6 +124,55 @@ from .forms import Delievery_ManagementForm
 
 
 
+# class UserRegistrationView(CreateView):
+#     model = Customer_list
+#     form_class = UserRegistrationForm
+#     template_name = 'shrihariapp/registration.html'
+#     success_url = reverse_lazy('admin_login')
+
+#     def form_valid(self, form):
+#         whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
+#         whatsapp_api_params = {
+#             'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
+#             'to': '919284546933',  
+#             'message': 'Hello, welcome!',  
+#             'IsUrgent': 'False',
+#             'isDeleteAfterSend': 'False',
+#             'isGroupMsg': 'False',
+#             'ExpiryTime': '00:00:00',
+#             'IsFailMessage': 'False',
+#             'SenderId': 'AB-111213',
+#             'ContentTemplate': 'Hello, This is text message.',
+#             'SendingMessageType': '1'
+#         }
+
+#         try:
+#             whatsapp_response = requests.get(whatsapp_api_url, params=whatsapp_api_params)
+#             print("WhatsApp API Response:", whatsapp_response.text)
+#             self.request.session['whatsapp_response'] = whatsapp_response.text
+#             messages.success(self.request, whatsapp_response.text)
+#         except requests.RequestException as e:
+#             print("Error sending WhatsApp message:", e)
+#             self.request.session['whatsapp_response'] = "Error: Failed to send WhatsApp message."
+#             messages.error(self.request, "Error: Failed to send WhatsApp message.")
+
+#         response = super().form_valid(form)
+
+#         subject = 'Welcome to Shri hari doodh !'
+#         message = 'Thank you for registering to Shri Hari doodh. We hope you enjoy using our platform.'
+#         from_email = 'info@shreeharidoodh.in'  # Change to your email
+#         to_email = form.cleaned_data['username']  # Assuming your form has an email field
+#         send_mail(subject, message, from_email, [to_email])
+
+#         return response
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         if self.request.method == 'POST' and self.object:
+#             context['registration_successful'] = True
+#         return context
+
+
 class UserRegistrationView(CreateView):
     model = Customer_list
     form_class = UserRegistrationForm
@@ -131,38 +180,41 @@ class UserRegistrationView(CreateView):
     success_url = reverse_lazy('admin_login')
 
     def form_valid(self, form):
-        whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
-        whatsapp_api_params = {
-            'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
-            'to': '919284546933',  
-            'message': 'Hello, welcome!',  
-            'IsUrgent': 'False',
-            'isDeleteAfterSend': 'False',
-            'isGroupMsg': 'False',
-            'ExpiryTime': '00:00:00',
-            'IsFailMessage': 'False',
-            'SenderId': 'AB-111213',
-            'ContentTemplate': 'Hello, This is text message.',
-            'SendingMessageType': '1'
-        }
+        # whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
+        # whatsapp_api_params = {
+        #     'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
+        #     'to': '919284546933',  
+        #     'message': 'Hello, welcome!',  
+        #     'IsUrgent': 'False',
+        #     'isDeleteAfterSend': 'False',
+        #     'isGroupMsg': 'False',
+        #     'ExpiryTime': '00:00:00',
+        #     'IsFailMessage': 'False',
+        #     'SenderId': 'AB-111213',
+        #     'ContentTemplate': 'Hello, This is text message.',
+        #     'SendingMessageType': '1'
+        # }
 
-        try:
-            whatsapp_response = requests.get(whatsapp_api_url, params=whatsapp_api_params)
-            print("WhatsApp API Response:", whatsapp_response.text)
-            self.request.session['whatsapp_response'] = whatsapp_response.text
-            messages.success(self.request, whatsapp_response.text)
-        except requests.RequestException as e:
-            print("Error sending WhatsApp message:", e)
-            self.request.session['whatsapp_response'] = "Error: Failed to send WhatsApp message."
-            messages.error(self.request, "Error: Failed to send WhatsApp message.")
+        # try:
+        #     whatsapp_response = requests.get(whatsapp_api_url, params=whatsapp_api_params)
+        #     print("WhatsApp API Response:", whatsapp_response.text)
+        #     self.request.session['whatsapp_response'] = whatsapp_response.text
+        #     messages.success(self.request, whatsapp_response.text)
+        # except requests.RequestException as e:
+        #     print("Error sending WhatsApp message:", e)
+        #     self.request.session['whatsapp_response'] = "Error: Failed to send WhatsApp message."
+        #     messages.error(self.request, "Error: Failed to send WhatsApp message.")
 
-        response = super().form_valid(form)
+      
+        messages.success(self.request, "Registration successful!")
 
         subject = 'Welcome to Shri hari doodh !'
         message = 'Thank you for registering to Shri Hari doodh. We hope you enjoy using our platform.'
-        from_email = 'shailesh.i@dreamztechnology.com'  # Change to your email
+        from_email = 'info@shreeharidoodh.in'  # Change to your email
         to_email = form.cleaned_data['username']  # Assuming your form has an email field
         send_mail(subject, message, from_email, [to_email])
+
+        response = super().form_valid(form)
 
         return response
 
@@ -170,8 +222,7 @@ class UserRegistrationView(CreateView):
         context = super().get_context_data(**kwargs)
         if self.request.method == 'POST' and self.object:
             context['registration_successful'] = True
-        return context
-        
+        return context        
 
 class UserLoginView(LoginView):
    
@@ -179,11 +230,24 @@ class UserLoginView(LoginView):
     template_name = 'shrihariapp/login.html'  
     # authentication_form = CustomeraddForm    
 
+# @never_cache
+# @login_required    
+# def Dashboard(request):
+    
+#     return render(request, 'shrihariapp/Dashboard.html')
+
 @never_cache
 @login_required    
 def Dashboard(request):
     
-    return render(request, 'shrihariapp/Dashboard.html')
+    user = request.user
+    if user.role == 'admin':
+        return render(request, 'shrihariapp/Dashboard.html')  
+    elif user.role == 'customer':
+        return redirect('product_list')   
+    else:
+        return redirect('Delievery_list')
+        
 
 
 
@@ -245,6 +309,31 @@ def Product_delete(request, pk):
 #     return render(request, 'shrihariapp/addproduct.html', {'form': form})
 
 
+# @never_cache
+# @login_required 
+# def Product_edit(request, pk):
+#     product = get_object_or_404(Products, pk=pk)
+    
+#     if request.method == "POST":
+#         form = AddProductForm(request.POST, request.FILES, instance=product)
+#         if form.is_valid():
+#             new_product = form.save(commit=False)
+            
+            
+#             if 'product_image' in request.FILES:
+#                 new_product.product_image.save(request.FILES['product_image'].name, request.FILES['product_image'], save=False)
+            
+#             # If the image is not changed, just save the form without image processing
+#             else:
+#                 new_product.save()
+
+#             return redirect('product_list')
+#     else:
+#         form = AddProductForm(instance=product)
+    
+#     return render(request, 'shrihariapp/addproduct.html', {'form': form})
+
+
 @never_cache
 @login_required 
 def Product_edit(request, pk):
@@ -255,20 +344,19 @@ def Product_edit(request, pk):
         if form.is_valid():
             new_product = form.save(commit=False)
             
-            # Save the product image if it's changed
+            # Check if a new image file is uploaded
             if 'product_image' in request.FILES:
-                new_product.product_image.save(request.FILES['product_image'].name, request.FILES['product_image'], save=False)
+                # Save the image file
+                new_product.product_image = request.FILES['product_image']
             
-            # If the image is not changed, just save the form without image processing
-            else:
-                new_product.save()
+            # Save the product with updated information
+            new_product.save()
 
             return redirect('product_list')
     else:
         form = AddProductForm(instance=product)
     
     return render(request, 'shrihariapp/addproduct.html', {'form': form})
-
 
 
 
@@ -356,6 +444,34 @@ def Packagedelete(request, pk):
 #     return render(request, 'shrihariapp/package_form.html', {'form': form, 'products': products})
 
 
+# @never_cache
+# @login_required 
+# def Packageedit(request, pk):
+#     package = get_object_or_404(Package, pk=pk)
+    
+#     if request.method == "POST":
+#         form = PackageForm(request.POST, request.FILES, instance=package)
+#         if form.is_valid():
+#             new_package = form.save(commit=False)
+            
+#             # Save the package image if it's changed
+#             if 'package_image' in request.FILES:
+#                 new_package.package_image.save(request.FILES['package_image'].name, request.FILES['package_image'], save=False)
+            
+#             # If the image is not changed, just save the form without image processing
+#             else:
+#                 new_package.save()
+
+#             return redirect('package_list')
+#     else:
+#         form = PackageForm(instance=package, initial={'products': package.products.all()})
+    
+#     products = Products.objects.all()
+    
+#     return render(request, 'shrihariapp/package_form.html', {'form': form, 'products': products})
+
+
+
 @never_cache
 @login_required 
 def Packageedit(request, pk):
@@ -366,13 +482,13 @@ def Packageedit(request, pk):
         if form.is_valid():
             new_package = form.save(commit=False)
             
-            # Save the package image if it's changed
+            # Check if a new image file is uploaded
             if 'package_image' in request.FILES:
-                new_package.package_image.save(request.FILES['package_image'].name, request.FILES['package_image'], save=False)
+                # Save the image file
+                new_package.package_image = request.FILES['package_image']
             
-            # If the image is not changed, just save the form without image processing
-            else:
-                new_package.save()
+            # Save the package with updated information
+            new_package.save()
 
             return redirect('package_list')
     else:
@@ -702,16 +818,19 @@ class DelieverySetup(FormView):
     def form_valid(self, form):
         delivery_management = form.save(commit=False)
         orderidofdo = delivery_management.daily_order_id
+
         
         selected_package = daily_orders.objects.get(pk=orderidofdo.pk)  
         package_id = selected_package.package_id
+        Date=selected_package.start_date
 
         packagedays = Package.objects.get(pk=package_id.pk) 
         gap_days = packagedays.gap_days
         package_days = packagedays.package_days
 
-        start_date_str = self.request.POST.get('Date') 
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None  # Assuming start date is submitted via form
+        # start_date_str = Date
+        start_date = Date  
+        # start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None  
         
         multiplication_result = package_days * 1
         current_date = start_date  # Initial current date
@@ -792,6 +911,15 @@ def stop(request):
         leave_instance = get_object_or_404(daily_orders, id=leave_id)
         leave_instance.approved_status = 1
         leave_instance.save()
+
+        customer_email = leave_instance.created_by.username
+
+        subject = 'Subscription Pause Request'
+        message = f'Subscription has been paused for order :{leave_id}'
+        from_email = 'info@shreeharidoodh.in' 
+        to_email = customer_email  
+        send_mail(subject, message, from_email, [to_email])
+
         return JsonResponse({'message': 'Service Has Been Paused'})
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
@@ -834,3 +962,24 @@ def resume(request):
         return JsonResponse({'message': 'Service Resume'})
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+@csrf_exempt
+def stopforcustomer(request):
+    if request.method == 'POST':
+        leave_id = request.POST.get('order_id')
+        leave_instance = get_object_or_404(daily_orders, id=leave_id)
+        leave_instance.approved_status = 2
+        leave_instance.save()
+
+        subject = 'Subscription Pause Request'
+        message = f'You have recieved request to pause the service for order ID {leave_id}. Please Login to admin Panel.'
+        from_email = 'info@shreeharidoodh.in' 
+        to_email = 'info@shreeharidoodh.in'  
+        send_mail(subject, message, from_email, [to_email])
+
+        return JsonResponse({'message': 'Request For Pause Subscription Has been raised Wait for admin Approval'})
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400) 
+

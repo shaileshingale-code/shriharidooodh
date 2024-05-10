@@ -39,6 +39,7 @@ from .views import delievered
 from .views import stop
 from .views import resume
 from .views import DelieverySetupTwo
+from .views import stopforcustomer
 
 
 
@@ -85,6 +86,7 @@ urlpatterns = [
      path('scheduleedit/<int:pk>/edit/', ScheduleEdit, name='scheduleedit'),
      path('delievered/', delievered, name='delievered'),
      path('stop/', stop, name='stop'),
+     path('stopforcustomer/', stopforcustomer, name='stopforcustomer'),
      path('resume/', resume, name='resume'),
  
 

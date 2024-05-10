@@ -30,6 +30,7 @@ class Products(models.Model):
     description = models.CharField(max_length=500)
     mrpprice = models.IntegerField()
     saleprice = models.IntegerField()
+    discount = models.IntegerField(blank=True, null=True)
     product_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
 
 
@@ -114,7 +115,7 @@ class daily_orders(models.Model):
 class Delievery_Management(models.Model):
     USERNAME_FIELD = 'created_by'  
     Delivery_Boy = models.ForeignKey(Customer_list, on_delete=models.CASCADE)
-    Date = models.DateField()
+    Date = models.DateField(blank=True, null=True)
     orderid = models.ForeignKey(orders, on_delete=models.CASCADE,blank=True, null=True)  
     daily_order_id = models.ForeignKey(daily_orders, on_delete=models.CASCADE,blank=True, null=True)
     delievery_status = models.IntegerField(default=0)

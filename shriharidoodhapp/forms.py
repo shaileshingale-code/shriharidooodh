@@ -86,7 +86,7 @@ class AddProductForm(forms.ModelForm):
 
     class Meta:
         model = Products
-        fields = ['product_name', 'varient', 'mrpprice', 'saleprice','product_image','description']
+        fields = ['product_name', 'varient','discount', 'mrpprice', 'saleprice','product_image','description']
         labels = {
             'apply_by': 'Apply By',
             'product_name': 'product_name',
@@ -254,7 +254,7 @@ class ChangeDetailsForm(UserCreationForm):
 class Delievery_ManagementForm(forms.ModelForm):
     class Meta:
         model = Delievery_Management
-        fields = ['Delivery_Boy', 'Date', 'orderid','daily_order_id']
+        fields = ['Delivery_Boy', 'orderid','daily_order_id']
 
     # def __init__(self, *args, **kwargs):
     #     product_id = kwargs.pop('product_id', None)
