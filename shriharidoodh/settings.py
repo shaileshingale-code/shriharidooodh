@@ -69,14 +69,23 @@ TEMPLATES = [
     },
 ]
 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587  # TLS port
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'goshala.noreply@gmail.com'  # Your Gmail address
+# EMAIL_HOST_PASSWORD = 'ltad idmj xafd caac'
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587  # TLS port
+EMAIL_HOST = 'smtp.hostinger.com'  
+EMAIL_PORT = 587  
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'goshala.noreply@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'ltad idmj xafd caac'
+EMAIL_HOST_USER = 'info@shreeharidoodh.in'  
+EMAIL_HOST_PASSWORD = 'Shreehari@2024#$!'  
 
 WSGI_APPLICATION = 'shriharidoodh.wsgi.application'
+
 
 
 # Database
