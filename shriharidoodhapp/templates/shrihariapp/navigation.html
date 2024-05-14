@@ -25,7 +25,7 @@
   <header style="width:21.26vw;box-shadow: 0px 0px 0px ;background-image: linear-gradient(to right, #f7f7f7  0%, #dce8f4   70%);"> 
 
     <div class="logosec"> 
-      <div class="logo"><img class="logoMain" src="/media/profile_images/image.png" alt="logo" style="width:64px"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+      <div class="logo"><img class="logoMain" src="/media/profile_images/image.png" alt="logo" style="width:78px"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
       <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210182541/Untitled-design-(30).png"
         class="icn menuicn"
         id="menuicn"
@@ -48,6 +48,9 @@
 
     <style>
       a{ color:#383C3F }
+      .nav-option:hover h3 {
+    color: white;
+}
 
 
       @media screen and (max-width: 600px) {
@@ -57,7 +60,7 @@
   }
 
   .navcontainer {
-    width:56vw !important;
+    width:60vw !important;
   }
 
   header{width:100% !important;}
@@ -76,7 +79,7 @@
             <svg class="nav-img"
             alt="dashboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>
               
-            <h3> Dashboard</h3> 
+             <a href="{% url 'dashboard' %}"><h3> Dashboard</h3> </a>
           </div> 
           
           {% endif %}
@@ -111,8 +114,8 @@
           {%  if  user.role == 'admin' %}
  
            <div class="option2 nav-option"> 
-            <i class="fa fa-group" style="font-size: 24px;"></i>
-            <a href="{% url 'Boy_list' %}"> <h3>  Delievery Boys</h3> </a>
+            <i class="fa-solid fa-children"></i>
+            <a href="{% url 'Boy_list' %}"> <h3>  Delivery Boys</h3> </a>
           </div> 
 
           {% endif %}
@@ -121,8 +124,8 @@
            {%  if  user.role == 'admin' %}
  
            <div class="option2 nav-option"> 
-            <i class="fa fa-group" style="font-size: 24px;"></i>
-            <a href="{% url 'Delievery_list' %}"> <h3>  Dilievery Setup</h3> </a>
+            <i class="fa-solid fa-truck"></i>
+            <a href="{% url 'Delievery_list' %}"> <h3> Delivery Setup</h3> </a>
           </div> 
 
           {% endif %}
@@ -131,8 +134,8 @@
            {%  if  user.role == 'admin' %}
  
            <div class="option2 nav-option"> 
-            <i class="fa fa-group" style="font-size: 24px;"></i>
-            <a href="{% url 'Delievery_setuptwo' %}"> <h3>  Dilievery Setup For Single Order</h3> </a>
+            <i class="fa-solid fa-person-walking-luggage"></i>
+            <a href="{% url 'Delievery_setuptwo' %}"> <h3>  Delivery Setup For Single Order</h3> </a>
           </div> 
 
           {% endif %}
