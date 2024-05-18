@@ -1,3 +1,5 @@
+ 
+ {% load custom_filters %}
  {% include 'shrihariapp/navigation.html' %}
     <div class="main" style="margin-top: -100px;height:120%"> 
          {{ form.non_field_errors }}
@@ -28,7 +30,7 @@
 
     <div class="form-group">
         <label >Product Name</label>
-        <input type="text" class="form-control" name="product_name" value="{{ form.product_name.value }}" required>
+        <input type="text" class="form-control" name="product_name" value="{{ form.product_name.value|default_if_none }}" required>
 
          {% for error in form.product_name.errors %}
             <small class="form-text text-danger">{{ error }}</small>
@@ -47,7 +49,7 @@
 
     <div class="form-group">
     <label for="{{ form.mrpprice.id_for_label }}">MRP:</label>
-    <input type="text" class="form-control" id="mrpprice" name="mrpprice" value="{{ form.mrpprice.value }}" required>
+    <input type="text" class="form-control" id="mrpprice" name="mrpprice" value="{{ form.mrpprice.value|default_if_none }}" required>
     {% for error in form.mrpprice.errors %}
     <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
@@ -55,7 +57,7 @@
 
 <div class="form-group">
     <label for="{{ form.discount.id_for_label }}">Discount (percentage):</label>
-    <input type="text" class="form-control" id="discount" name="discount" value="{{ form.discount.value }}" required>
+    <input type="text" class="form-control" id="discount" name="discount" value="{{ form.discount.value|default_if_none }}" required>
     {% for error in form.discount.errors %}
     <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
@@ -63,7 +65,7 @@
 
 <div class="form-group">
     <label for="{{ form.saleprice.id_for_label }}">Sale Price:</label>
-    <input type="text" class="form-control" id="saleprice" name="saleprice" value="{{ form.saleprice.value }}" required readonly>
+    <input type="text" class="form-control" id="saleprice" name="saleprice" value="{{ form.saleprice.value|default_if_none }}" required readonly>
     {% for error in form.saleprice.errors %}
     <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
@@ -72,7 +74,7 @@
     
     <div class="form-group">
         <label for="{{ form.password1.id_for_label }}">Description:</label>
-        <input type="text" class="form-control" name="description" value="{{ form.description.value }}" required>
+        <input type="text" class="form-control" name="description" value="{{ form.description.value|default_if_none }}" required>
           {% for error in form.description.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
