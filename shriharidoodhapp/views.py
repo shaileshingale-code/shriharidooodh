@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 from django import template
 from datetime import date
 from django.utils import timezone
+from django.contrib.auth import update_session_auth_hash
 
 # from .models import Users
 from .models import Products
@@ -42,6 +43,7 @@ from .forms import UserEditForm
 from .forms import ChangeDetailsForm
 from .forms import Delievery_ManagementForm
 
+from .forms import UsernameForm, CustomSetPasswordForm
 
 
 
@@ -983,3 +985,36 @@ def stopforcustomer(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400) 
 
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = UsernameForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            try:
+                user = Customer_list.objects.get(username=username)
+                request.session['reset_user_id'] = user.id
+                return redirect('reset_password')
+            except Customer_list.DoesNotExist:
+                messages.error(request, 'Username not found in our records.')
+    else:
+        form = UsernameForm()
+    return render(request, 'shrihariapp/forgot_password.html', {'form': form})
+
+def reset_password(request):
+    user_id = request.session.get('reset_user_id')
+    if not user_id:
+        return redirect('forgot_password')
+
+    user = Customer_list.objects.get(id=user_id)
+    if request.method == 'POST':
+        form = CustomSetPasswordForm(user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user) 
+            messages.success(request, 'Your password has been set. You can now log in with the new password.')
+            return redirect('admin_login')
+    else:
+        form = CustomSetPasswordForm(user)
+    return render(request, 'shrihariapp/reset_password.html', {'form': form})

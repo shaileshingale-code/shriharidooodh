@@ -5,6 +5,7 @@ from django import forms
 
 from django import forms
 from django.db import transaction
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm 
@@ -290,3 +291,11 @@ class Delievery_ManagementForm(forms.ModelForm):
 #                 instance.save()
 
 #         return instance
+
+
+class UsernameForm(forms.Form):
+    username = forms.EmailField(label='Username', max_length=254)
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(label='New password', widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label='Confirm new password', widget=forms.PasswordInput)

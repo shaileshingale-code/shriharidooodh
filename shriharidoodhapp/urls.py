@@ -40,6 +40,7 @@ from .views import stop
 from .views import resume
 from .views import DelieverySetupTwo
 from .views import stopforcustomer
+from .views import forgot_password, reset_password
 
 
 
@@ -88,6 +89,8 @@ urlpatterns = [
      path('stop/', stop, name='stop'),
      path('stopforcustomer/', stopforcustomer, name='stopforcustomer'),
      path('resume/', resume, name='resume'),
+     path('forgot_password/', forgot_password, name='forgot_password'),
+     path('reset_password/', reset_password, name='reset_password'),
  
 
 
