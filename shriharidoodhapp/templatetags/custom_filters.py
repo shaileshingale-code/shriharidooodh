@@ -13,3 +13,8 @@ def add_days(date_value, days):
 @register.filter
 def mul(value, arg):
     return value * arg
+
+
+@register.filter
+def default_if_none(value, default_value=''):
+    return default_value if value is None else value    
