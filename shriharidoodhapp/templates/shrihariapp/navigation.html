@@ -48,7 +48,7 @@
 
     <style>
       a{ color:#383C3F }
-      #buttonn:hover h3 {
+      .nav-option:hover h3 {
     color: white;
 }
 
@@ -64,7 +64,18 @@
   }
 
   header{width:100% !important;}
+
+  #pckackagebox{ padding:20px !important;height:380px !important}
+  #pckackagebox1{ padding:40px !important;}
+   #pckackagebox2{  padding:20px !important;height:398px !important}
 }
+
+{%  if  user.role == 'customer' %}
+
+.buttons-html5{ Display:none !important; }
+.buttons-print{ Display:none !important; }
+
+{% endif %} 
     </style>
 
   </header> 
@@ -75,11 +86,11 @@
       
         <div class="nav-upper-options">
          {%  if  user.role == 'admin' %} 
-          <div class="nav-option active" id="buttonn"> 
+          <div class="nav-option active"> 
             <svg class="nav-img"
             alt="dashboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>
               
-             <a href="{% url 'dashboard' %}" ><h3> Dashboard</h3> </a>
+             <a href="{% url 'dashboard' %}"><h3> Dashboard</h3> </a>
           </div> 
           
           {% endif %}

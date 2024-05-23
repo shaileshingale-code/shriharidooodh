@@ -58,7 +58,7 @@
 
 
     <div class="form-group">
-        <label >Delievery Address:</label>
+        <label style="display:none">Delievery Address:</label>
         <input type="hidden" class="form-control" name="delievery_address" value="{{ user.customer_address }}" required>
 
         {% for error in form.delievery_address.errors %}
