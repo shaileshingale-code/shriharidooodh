@@ -26,7 +26,7 @@
 
     <div class="form-group">
         <label >Package Name</label>
-        <input type="text" class="form-control" name="package_name" value="{{ form.package_name.value|default_if_none }}" required>
+        <input type="text" class="form-control" name="package_name"  pattern="^[a-zA-Z\s]*$"  value="{{ form.package_name.value|default_if_none }}" required>
 
          {% for error in form.package_name.errors %}
             <small class="form-text text-danger">{{ error }}</small>
@@ -34,7 +34,7 @@
     </div>
   <div class="form-group">
         <label for="{{ form.password1.id_for_label }}">Price:</label>
-        <input type="text" class="form-control" name="package_price" value="{{ form.package_price.value|default_if_none }}" required>
+        <input type="number" class="form-control" name="package_price" value="{{ form.package_price.value|default_if_none }}" required>
           {% for error in form.package_price.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
@@ -45,7 +45,7 @@
 
     <div class="form-group">
         <label for="{{ form.password1.id_for_label }}">Days:</label>
-        <input type="text" class="form-control" name="package_days" value="{{ form.package_days.value|default_if_none }}" required>
+        <input type="number" class="form-control" name="package_days" value="{{ form.package_days.value|default_if_none }}" required>
           {% for error in form.package_days.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
@@ -56,7 +56,7 @@
 
     <div class="form-group">
         <label for="{{ form.password1.id_for_label }}">Gap Days:</label>
-        <input type="text" class="form-control" name="gap_days" value="{{ form.gap_days.value|default_if_none }}" required>
+        <input type="number" class="form-control" name="gap_days" value="{{ form.gap_days.value|default_if_none }}" required>
           {% for error in form.gap_days.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
@@ -79,13 +79,22 @@
     {% endfor %}
 </div>
 
+ {% if not form.package_image.value or form.package_image.value == 'None' %}
+    <div class="form-group">
+        <label>Image</label>
+        <input type="file" name="package_image" required accept=".png,.jpg">
+    </div>
+{% else %}
+    <div class="form-group">
+        <label>Image</label>
+        <input type="file" name="package_image" accept=".png,.jpg">
+    </div>
+{% endif %}
 
+ {% for error in form.package_image.errors %}
+        <small class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
 
- <div class="form-group">
-        <label >Image</label>
-        <input type="file"  name="package_image" value="{{ form.package_image.value }}" >
- </div>
-   
 
     <button class="btn btn-primary" type="submit">Add </button> 
 </form>

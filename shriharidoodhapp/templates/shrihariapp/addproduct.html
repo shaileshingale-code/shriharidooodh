@@ -30,7 +30,7 @@
 
     <div class="form-group">
         <label >Product Name</label>
-        <input type="text" class="form-control" name="product_name" value="{{ form.product_name.value|default_if_none }}" required>
+        <input type="text" class="form-control" name="product_name"  pattern="^[a-zA-Z\s]*$"  value="{{ form.product_name.value|default_if_none }}" required>
 
          {% for error in form.product_name.errors %}
             <small class="form-text text-danger">{{ error }}</small>
@@ -39,7 +39,7 @@
 
     <div class="form-group">
         <label >Varient:</label>
-        <input type="text" class="form-control" name="varient" value="{% if form.varient.value is not empty %}{{ form.varient.value }}{% else %}{{ varient }}{% endif %}" required  placeholder="eg. 1ltr,2ltr,1kg,2kg">
+        <input type="text" class="form-control" name="varient" value="{% if form.varient.value is not empty %}{{ form.varient.value }}{% else %}{{ varient }}{% endif %}" required pattern="[A-Za-z0-9]+" placeholder="eg. 1ltr,2ltr,1kg,2kg">
 
         {% for error in form.varient.errors %}
             <small class="form-text text-danger">{{ error }}</small>
@@ -49,7 +49,7 @@
 
     <div class="form-group">
     <label for="{{ form.mrpprice.id_for_label }}">MRP:</label>
-    <input type="text" class="form-control" id="mrpprice" name="mrpprice" value="{{ form.mrpprice.value|default_if_none }}" required>
+    <input type="number" class="form-control" id="mrpprice" name="mrpprice" value="{{ form.mrpprice.value|default_if_none }}" required>
     {% for error in form.mrpprice.errors %}
     <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
@@ -57,7 +57,7 @@
 
 <div class="form-group">
     <label for="{{ form.discount.id_for_label }}">Discount (percentage):</label>
-    <input type="text" class="form-control" id="discount" name="discount" value="{{ form.discount.value|default_if_none }}" required>
+    <input type="number" class="form-control" id="discount" name="discount" value="{{ form.discount.value|default_if_none }}" required>
     {% for error in form.discount.errors %}
     <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
@@ -65,7 +65,7 @@
 
 <div class="form-group">
     <label for="{{ form.saleprice.id_for_label }}">Sale Price:</label>
-    <input type="text" class="form-control" id="saleprice" name="saleprice" value="{{ form.saleprice.value|default_if_none }}" required readonly>
+    <input type="text" class="form-control" id="saleprice" name="saleprice" value="{{ form.saleprice.value|default_if_none }}"  readonly>
     {% for error in form.saleprice.errors %}
     <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
@@ -74,21 +74,41 @@
     
     <div class="form-group">
         <label for="{{ form.password1.id_for_label }}">Description:</label>
-        <input type="text" class="form-control" name="description" value="{{ form.description.value|default_if_none }}" required>
+        <input type="text" class="form-control" name="description"  pattern="^[a-zA-Z\s]*$"  value="{{ form.description.value|default_if_none }}" required>
           {% for error in form.description.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
         
     </div>
 
-     <div class="form-group">
+   <!--   <div class="form-group">
         <label for="{{ form.password1.id_for_label }}">Image:</label>
         <input type="file" class="form-control" name="product_image" value="{{ form.product_image.value }}" >
           {% for error in form.product_image.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
         
+    </div> -->
+
+
+     {% if not form.product_image.value or form.product_image.value == 'None' %}
+    <div class="form-group">
+        <label>Image</label>
+        <input type="file" name="product_image" required accept=".png,.jpg">
+        {% for error in form.product_image.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
     </div>
+{% else %}
+    <div class="form-group">
+        <label>Image</label>
+        <input type="file" name="product_image" accept=".png,.jpg">
+        {% for error in form.product_image.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+{% endif %}
 
    
 
@@ -108,7 +128,7 @@
 
   <script src="/media/index.js"></script> 
 
-  <script>
+  <!-- <script>
     // Get input elements
     var mrpInput = document.getElementById("mrpprice");
     var discountInput = document.getElementById("discount");
@@ -127,6 +147,32 @@
 
         // Update sale price input value
         salePriceInput.value = salePrice.toFixed(2);
+    }
+</script> -->
+
+
+<script>
+    // Get input elements
+    var mrpInput = document.getElementById("mrpprice");
+    var discountInput = document.getElementById("discount");
+    var salePriceInput = document.getElementById("saleprice");
+
+    // Add event listeners for input change
+    mrpInput.addEventListener("input", updateSalePrice);
+    discountInput.addEventListener("input", updateSalePrice);
+
+    function updateSalePrice() {
+        var mrpPrice = parseFloat(mrpInput.value);
+        var discountPercent = parseFloat(discountInput.value);
+
+        // Calculate sale price
+        var salePrice = mrpPrice - (mrpPrice * (discountPercent / 100));
+
+        // Round sale price to the nearest whole number
+        salePrice = Math.round(salePrice);
+
+        // Update sale price input value
+        salePriceInput.value = salePrice;
     }
 </script>
 </body> 

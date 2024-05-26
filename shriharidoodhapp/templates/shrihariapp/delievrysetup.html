@@ -34,7 +34,7 @@
    <div class="row">
     <div class="form-group col-md-6">
         <label >Delivery Boy</label>
-        <select name="Delivery_Boy"  class="form-control">
+        <select name="Delivery_Boy"  class="form-control" required>
             <option value="">Please Select</option>
     {% for customer in customers %}
         <option   {% if customer.role != 'DeliveryBoy' %} style="display:none" {% endif %} value="{{ customer.id }}"   {% if form.Delivery_Boy.value == customer.id %} selected {% endif %}>{{ customer.customer_name }}</option>
@@ -49,7 +49,7 @@
 
     <div class="form-group col-md-6" style="display:none">
         <label >Order </label>
-         <select name="orderid"  class="form-control">
+         <select name="orderid"  class="form-control" >
             <option value="">Please Select</option>
     {% for orders in orderss %}
         <option value="{{ orders.id }}"   {% if form.orderid.value == orders.id %} selected {% endif %}>{{ orders.created_by.customer_name }}({{orders.product_id.product_name }},{{orders.product_id.varient }})</option>
@@ -65,7 +65,7 @@
  <div class="row">
      <div class="form-group col-md-6">
         <label>Daily Order </label>
-       <select name="daily_order_id"  class="form-control">
+       <select name="daily_order_id"  class="form-control" required>
         <option value="">Please Select</option>
     {% for dailyorders in dailyorderss %}
         <option value="{{ dailyorders.id }}"   {% if form.daily_order_id.value == dailyorders.id %} selected {% endif %}>{{ dailyorders.created_by.customer_name }}({{dailyorders.package_id.package_name }})</option>

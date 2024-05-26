@@ -6,7 +6,7 @@
          {{ form.non_field_errors }}
      
       <div align="right">
-             <a href="{% url 'customer_list' %}"> <i class="fa fa-list"></i> Delivery Boy list</a>
+             <a href="{% url 'Boy_list' %}"> <i class="fa fa-list"></i> Delivery Boy list</a>
       </div>
                   <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
            <form method="post" enctype="multipart/form-data">
@@ -35,7 +35,7 @@
    <div class="row">
     <div class="form-group col-md-6">
         <label > Name</label>
-        <input type="text" class="form-control" name="customer_name" value="{{ form.customer_name.value|default_if_none }}" required>
+        <input type="text" class="form-control" name="customer_name" value="{{ form.customer_name.value|default_if_none }}"   pattern="^[a-zA-Z\s]*$"  placeholder="Enter  Full Name" required>
              
 
          {% for error in form.customer_name.errors %}
@@ -46,7 +46,7 @@
 
     <div class="form-group col-md-6">
         <label >Address:</label>
-        <input type="text" class="form-control" name="customer_address" value="{{ form.customer_address.value|default_if_none }}" required>
+        <input type="text" class="form-control" name="customer_address" value="{{ form.customer_address.value|default_if_none }}" pattern="^[a-zA-Z\s]*$"  placeholder="Addresse" required>
 
         {% for error in form.customer_address.errors %}
             <small class="form-text text-danger">{{ error }}</small>
@@ -129,7 +129,7 @@
 
      <div class="form-group col-md-6">
         <label >User Name:</label>
-        <input type="email" class="form-control" name="username" value="{{ form.username.value|default_if_none }}" >
+        <input type="email" class="form-control"  name="username"pattern="[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$" name="username" placeholder="Enter Your Username/Email" value="{{ form.username.value|default_if_none }}" >
 
          {% for error in form.username.errors %}
             <small class="form-text text-danger">{{ error }}</small>
@@ -147,7 +147,7 @@
 
      <div class="form-group col-md-6">
         <label >phone:</label>
-        <input type="text" class="form-control" name="phone" value="{{ form.phone.value|default_if_none }}" required>
+        <input type="text" class="form-control" name="phone"  pattern="[1-9]{1}[0-9]{9}"  placeholder="xxxxxxxxxxss" value="{{ form.phone.value|default_if_none }}" required>
 
         {% for error in form.phone.errors %}
             <small class="form-text text-danger">{{ error }}</small>
@@ -161,7 +161,7 @@
 
      <div class="form-group col-md-6">
         <label >Password</label>
-        <input type="password" class="form-control" name="password1" value="" >
+        <input type="password" class="form-control" placeholder="*******" name="password1" value="" >
 
         {% for error in form.password1.errors %}
             <small class="form-text text-danger">{{ error }}</small>

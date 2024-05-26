@@ -9,6 +9,14 @@
       </div>
       <br>
 
+       {% if messages %}
+       
+            {% for message in messages %}
+          <h3 style="text-align: center;color:green">       {{ message }}</h3>
+            {% endfor %}
+       
+        {% endif %}
+
       <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
     <table id="example" class="display nowrap" style="width:100%">
       <thead>
@@ -29,8 +37,9 @@
     <tbody>
 
     {% for customer in customers %}
+     {% if customer.role == 'DeliveryBoy' %}
       
-       <tr {% if customer.role != 'DeliveryBoy' %} style="display:none" {% endif %}>
+       <tr >
             <!-- <tr> -->
             <td>{{ customer.customer_name }} </td>
             <td>{{ customer.customer_address }} </td>
@@ -103,8 +112,8 @@
 
      
 
-            <td><a href="{% url 'boy_delete' pk=customer.pk %}"><i class="fa fa-trash-o"></i></a>
-                 <a href="{% url 'boy_edit' pk=customer.pk %}"><i class="fa fa-edit"></i></a>
+            <td><a href="{% url 'boy_delete' pk=customer.pk %}"><i class="fa fa-trash-o" title="Delete"></i></a>
+                 <a href="{% url 'boy_edit' pk=customer.pk %}"><i class="fa fa-edit" title="Edit"></i></a>
                  <!-- <a href="{% url 'change_details' pk=customer.pk %}"><i class="fa fa-edit" title="change login details"></i></a> -->
              </td> 
              <td>
@@ -112,7 +121,7 @@
              </td> 
         </tr> 
 
-        
+      {% endif %}  
     {% endfor %}
 
     </tbody>

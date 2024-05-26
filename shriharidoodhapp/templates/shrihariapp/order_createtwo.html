@@ -29,7 +29,7 @@
 
     <div class="form-group">
         <label >Start Date </label>
-        <input type="date" class="form-control" id="booking-date" name="start_date" value="{{ form.start_date.value }}" required>
+        <input type="date" class="form-control" id="booking-date" name="start_date"  value="{{ form.start_date.value|date:'Y-m-d' }}" required>
           
 
          {% for error in form.start_date.errors %}
@@ -90,29 +90,29 @@
   
   
   <script src="/media/index.js"></script> 
-   <script>
-    function updateBookingDate() {
-        // var typeSelect = document.getElementById("select-type");
-        var bookingDateInput = document.getElementById("booking-date");
-        // var selectedType = typeSelect.value;
-        var today = new Date();
-        var currentHour = today.getHours();
+  <script>
+        function updateBookingDate() {
+            var bookingDateInput = document.getElementById("booking-date");
+            var today = new Date();
+            var currentHour = today.getHours();
 
-     
             if (currentHour >= 18) {
                 // Add one day to today's date
                 today.setDate(today.getDate() + 1);
             }
-        
 
-        // Set the min attribute of the booking date input
-        var minDate = today.toISOString().split("T")[0];
-        bookingDateInput.min = minDate;
-        bookingDateInput.value = minDate; // Set the initial value to the calculated min date
-    }
+            // Set the min attribute of the booking date input
+            var minDate = today.toISOString().split("T")[0];
+            bookingDateInput.min = minDate;
 
-    // Call the updateBookingDate function on page load (if needed)
-    updateBookingDate();
-</script>
+            // Only set the initial value if the input field is empty
+            if (!bookingDateInput.value) {
+                bookingDateInput.value = minDate;
+            }
+        }
+
+        // Call the updateBookingDate function on page load (if needed)
+        document.addEventListener("DOMContentLoaded", updateBookingDate);
+    </script>
 </body> 
 </html>

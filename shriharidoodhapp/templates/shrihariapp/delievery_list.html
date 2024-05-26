@@ -5,11 +5,24 @@
     <div class="main" style="margin-top: -50px;"> 
       {%  if  user.role == 'admin' %}
       <div align="right">
-             <a href="{% url 'Delievery_setup' %}"> <i class="fa fa-plus"></i> Schedule Delivery</a>
+             <a href="{% url 'Delievery_setup' %}"> <i class="fa fa-plus"></i> Schedule Deliverys</a>
       </div>
+
+
       <br>
          {% endif %}
+
+     {% if messages %}
+       
+            {% for message in messages %}
+          <h3 style="text-align: center;color:green">       {{ message }}</h3>
+            {% endfor %}
+       
+        {% endif %}
+        
       <div  style="box-shadow: 0px 3px  5px #ccc; border-radius:10px;padding:30px;">
+
+
     <table id="example" class="display nowrap" style="width:100%">
       <thead>
         <tr>
@@ -124,8 +137,8 @@
      
 
             <td>
-                <a href="{% url 'schedule_delete' pk=customer.pk %}"><i class="fa fa-trash-o"></i></a>
-                 <a href="{% url 'scheduleedit' pk=customer.pk %}"><i class="fa fa-edit"></i></a>
+                <a href="{% url 'schedule_delete' pk=customer.pk %}"><i class="fa fa-trash-o" title="Delete"></i></a>
+                 <a href="{% url 'scheduleedit' pk=customer.pk %}"><i class="fa fa-edit" title="Edit"></i></a>
                  <!-- <a href="{% url 'change_details' pk=customer.pk %}"><i class="fa fa-edit" title="change login details"></i></a> -->
              </td> 
              <td>

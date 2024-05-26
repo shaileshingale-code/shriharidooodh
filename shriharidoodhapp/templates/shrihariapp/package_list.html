@@ -7,7 +7,17 @@
       </div>
       {% endif %}
       <br>
+
+       {% if messages %}
+       
+            {% for message in messages %}
+          <h3 style="text-align: center;color:green">       {{ message }}</h3>
+            {% endfor %}
+       
+        {% endif %}
+
    <div class="row">
+
 
     {% for package in packages %}
    
