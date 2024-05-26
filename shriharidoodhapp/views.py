@@ -276,8 +276,12 @@ class ProductAddFormView(CreateView):
            
             print("An error occurred while saving form data:", e)
           
-            return HttpResponseRedirect(reverse_lazy('error_page'))      
+            return HttpResponseRedirect(reverse_lazy('error_page'))  
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Record Added successfully!')
+        return response
 
 @never_cache
 @login_required 
@@ -290,6 +294,7 @@ def ProductListView(request):
 def Product_delete(request, pk):
     product = get_object_or_404(Products, pk=pk)
     product.delete()
+    messages.success(request, 'Record Deleted Successfully.')
     return redirect('product_list')  
 
 
@@ -353,7 +358,7 @@ def Product_edit(request, pk):
             
             # Save the product with updated information
             new_product.save()
-
+            messages.success(request, 'Record Edited Successfully.')
             return redirect('product_list')
     else:
         form = AddProductForm(instance=product)
@@ -375,7 +380,10 @@ class create_package(CreateView):
         context = super().get_context_data(**kwargs)
         context['products'] = Products.objects.all()
         return context
-
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Record Added successfully!')
+        return response
 
 
 @never_cache
@@ -388,6 +396,7 @@ def PackageListView(request):
 def Packagedelete(request, pk):
     package = get_object_or_404(Package, pk=pk)
     package.delete()
+    messages.success(request, 'Record Edited Successfully.')
     return redirect('package_list')
 
 
@@ -491,7 +500,7 @@ def Packageedit(request, pk):
             
             # Save the package with updated information
             new_package.save()
-
+            messages.success(request, 'Record Edited Successfully.')
             return redirect('package_list')
     else:
         form = PackageForm(instance=package, initial={'products': package.products.all()})
@@ -513,6 +522,11 @@ class AddCustomerView(CreateView):
         context['packages'] = Package.objects.all()
         return context 
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Customer successfully registered!')
+        return response    
+
 
 @never_cache
 @login_required 
@@ -529,7 +543,11 @@ def CustomerListView(request):
 def Customerdelete(request, pk):
     customer = get_object_or_404(Customer_list, pk=pk)
     customer.delete()
+    messages.success(request, 'Customer deleted successfully.')
     return redirect('customer_list')
+
+
+
 
 
 @never_cache
@@ -549,6 +567,7 @@ def Customeredit(request, pk):
                     return render(request, 'shrihariapp/editcustomer.html', {'form': form})
             
             new_customer.save()
+            messages.success(request, 'Customer Record Updated successfully.')
             return redirect('customer_list')
     else:
         form = UserEditForm(instance=customer)
@@ -576,6 +595,7 @@ def ChangeDetails(request, pk):
                     return render(request, 'shrihariapp/changedetails.html', {'form': form})
             
             new_customer.save()
+            messages.success(request, 'Password Updated successfully.')
             return redirect('customer_list')
     else:
         form = ChangeDetailsForm(instance=customer)
@@ -594,6 +614,7 @@ def order_create(request, product_id):
             form.instance.created_by = request.user
             form.instance.product_id_id = product_id
             form.save()
+            messages.success(request, 'Order Created Successfully.')
             return redirect('order_list')  # Redirect to a success page
     else:
         form = OrderForm(product_id=product_id)
@@ -619,6 +640,7 @@ def order_createtwo(request, package_id):
             form.instance.created_by = request.user
             # form.instance.package_id = package_id
             form.save()
+            messages.success(request, 'Order Created Successfully.')
             return redirect('daily_list')  # Redirect to a success page
     else:
         form = OrderFormtwo(package_id=package_id)
@@ -641,6 +663,7 @@ def DailyOrderListView(request):
 def Orderdelete(request, pk):
     orderd = get_object_or_404(daily_orders, pk=pk)
     orderd.delete()
+    messages.success(request, 'Order deleted Successfully.')
     return redirect('daily_list')
 
 
@@ -653,6 +676,7 @@ def Orderedit(request, pk):
         if form.is_valid():
             customer = form.save(commit=False)
             customer.save()
+            messages.success(request, 'Order edited Successfully.')
             return redirect('daily_list')
            
     else:
@@ -683,6 +707,10 @@ class AddBoyView(CreateView):
         context['packages'] = Package.objects.all()
         return context 
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Record Added successfully!')
+        return response
 
 @never_cache
 @login_required 
@@ -698,6 +726,7 @@ def BoyListView(request):
 def Boydelete(request, pk):
     customer = get_object_or_404(Customer_list, pk=pk)
     customer.delete()
+    messages.success(request, 'Record Deleted Successfully.')
     return redirect('Boy_list')
 
 
@@ -719,6 +748,7 @@ def Boyedit(request, pk):
                     return render(request, 'shrihariapp/editboy.html', {'form': form})
             
             new_customer.save()
+            messages.success(request, 'Record Edited Successfully.')
             return redirect('Boy_list')
     else:
         form = UserEditForm(instance=customer)
@@ -769,7 +799,12 @@ class DelieverySetupTwo(CreateView):
         context['orderss'] = orders.objects.all()
         context['dailyorderss'] = daily_orders.objects.all()
         context['customers'] = Customer_list.objects.all()
-        return context        
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Record Added successfully!')
+        return response            
 
 
 # class DelieverySetup(FormView):
@@ -817,6 +852,8 @@ class DelieverySetup(FormView):
         context['customers'] = Customer_list.objects.all()
         return context
 
+
+
     def form_valid(self, form):
         delivery_management = form.save(commit=False)
         orderidofdo = delivery_management.daily_order_id
@@ -851,6 +888,9 @@ class DelieverySetup(FormView):
         return redirect(self.success_url)
 
 
+
+
+
 @never_cache
 @login_required 
 def DelieverylistView(request):
@@ -869,6 +909,7 @@ def DelieverylistView(request):
 def ScheduleDelete(request, pk):
     customer = get_object_or_404(Delievery_Management, pk=pk)
     customer.delete()
+    messages.success(request, 'Record Deleted Successfully.')
     return redirect('Delievery_list')
 
 
@@ -882,6 +923,7 @@ def ScheduleEdit(request, pk):
         if form.is_valid():
             customer = form.save(commit=False)
             customer.save()
+            messages.success(request, 'Record updated Successfully.')
             return redirect('Delievery_list')
            
     else:
