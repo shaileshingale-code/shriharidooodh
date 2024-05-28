@@ -59,7 +59,7 @@
         {% with final_date=order.start_date|add_days:days %}
             <td>{{ order.start_date }}</td>
            {% if final_date <= today %}
-               <td><span style="background-color: red;padding:4px;color:white">Inactiva {{ order.package_id.gap_days }} </span></td>
+               <td><span style="background-color: red;padding:4px;color:white">Inactive {{ order.package_id.gap_days }} </span></td>
             {% else %}
                 <td><span style="background-color: green;padding:4px;color:white">Active {{ order.package_id.gap_days }} </span></td>
             {% endif %}
@@ -109,7 +109,7 @@
         {% with final_date=order.start_date|add_days:days %}
             <td>{{ order.start_date }}</td>
            {% if final_date <= today %}
-               <td><span style="background-color: red;padding:4px;color:white">Inactiva  </span></td>
+               <td><span style="background-color: red;padding:4px;color:white">Inactive  </span></td>
             {% else %}
                 <td><span style="background-color: green;padding:4px;color:white">Active  </span></td>
             {% endif %}
