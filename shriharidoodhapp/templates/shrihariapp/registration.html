@@ -313,7 +313,7 @@ h1 {
         <div class="col-md-6">
     <div class="form-group">
         <label for="{{ form.email.id_for_label }}">Username/Email</label>
-        <input type="text" class="form-control" name="username" pattern="[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$" placeholder="Enter Your Username/Email" value="{{ form.username.value|default_if_none }}">
+        <input type="text" class="form-control" name="username" pattern="" placeholder="Enter Your Username/Email" value="{{ form.username.value|default_if_none }}">
         {% for error in form.username.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
