@@ -57,7 +57,7 @@
 
 <div class="form-group">
     <label for="{{ form.discount.id_for_label }}">Discount (percentage):</label>
-    <input type="number" class="form-control" id="discount" name="discount" value="{{ form.discount.value|default_if_none }}" required>
+    <input type="number" class="form-control" id="discount" name="discount" value="{{ form.discount.value|default_if_none }}" max="99" required>
     {% for error in form.discount.errors %}
     <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
