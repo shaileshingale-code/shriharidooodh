@@ -36,7 +36,7 @@
 
     {% for customer in customers %}
 
-<!--      {% if customer.role == 'admin' %} -->
+     {% if customer.role == 'customers' %}
       
 
             <tr>
@@ -120,7 +120,7 @@
              </td> 
         </tr> 
 
-<!--          {% endif %} -->
+         {% endif %}
     {% endfor %}
 
     </tbody>
