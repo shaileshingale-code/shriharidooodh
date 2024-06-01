@@ -175,6 +175,60 @@ from .forms import UsernameForm, CustomSetPasswordForm
 #         return context
 
 
+# class UserRegistrationView(CreateView):
+#     model = Customer_list
+#     form_class = UserRegistrationForm
+#     template_name = 'shrihariapp/registration.html'
+#     success_url = reverse_lazy('admin_login')
+
+#     def form_valid(self, form):
+#         whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
+#         whatsapp_api_params = {
+#             'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
+#             'to': '919284546933',  
+#             'message': 'Hello, welcome!',  
+#             'IsUrgent': 'False',
+#             'isDeleteAfterSend': 'False',
+#             'isGroupMsg': 'False',
+#             'ExpiryTime': '00:00:00',
+#             'IsFailMessage': 'False',
+#             'SenderId': 'AB-111213',
+#             'ContentTemplate': 'Hello, This is text message.',
+#             'SendingMessageType': '1'
+#         }
+
+#         try:
+#             whatsapp_response = requests.get(whatsapp_api_url, params=whatsapp_api_params)
+#             print("WhatsApp API Response:", whatsapp_response.text)
+#             self.request.session['whatsapp_response'] = whatsapp_response.text
+#             messages.success(self.request, whatsapp_response.text)
+#         except requests.RequestException as e:
+#             print("Error sending WhatsApp message:", e)
+#             self.request.session['whatsapp_response'] = "Error: Failed to send WhatsApp message."
+#             messages.error(self.request, "Error: Failed to send WhatsApp message.")
+
+      
+#         messages.success(self.request, "Registration successful!")
+
+#         subject = 'Welcome to Shri hari doodh !'
+#         message = 'Thank you for registering to Shri Hari doodh. We hope you enjoy using our platform.'
+#         from_email = 'info@shreeharidoodh.in'  # Change to your email
+#         to_email = form.cleaned_data['username']  # Assuming your form has an email field
+#         send_mail(subject, message, from_email, [to_email])
+
+#         response = super().form_valid(form)
+
+#         return response
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         if self.request.method == 'POST' and self.object:
+#             context['registration_successful'] = True
+#         return context    
+
+
+
+
 class UserRegistrationView(CreateView):
     model = Customer_list
     form_class = UserRegistrationForm
@@ -182,32 +236,31 @@ class UserRegistrationView(CreateView):
     success_url = reverse_lazy('admin_login')
 
     def form_valid(self, form):
-        # whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
-        # whatsapp_api_params = {
-        #     'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
-        #     'to': '919284546933',  
-        #     'message': 'Hello, welcome!',  
-        #     'IsUrgent': 'False',
-        #     'isDeleteAfterSend': 'False',
-        #     'isGroupMsg': 'False',
-        #     'ExpiryTime': '00:00:00',
-        #     'IsFailMessage': 'False',
-        #     'SenderId': 'AB-111213',
-        #     'ContentTemplate': 'Hello, This is text message.',
-        #     'SendingMessageType': '1'
-        # }
+        # Prepare SMS API request details
+        phone_number = form.cleaned_data.get('phone')
+        sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+        sms_api_params = {
+            'mobile': '9987952450',
+            'pass': 'Dreamz@2024',
+            'senderid': 'SWATKH',
+            'to': phone_number,  # The recipient's phone number
+            'msg': 'Thank you for registering. A warm welcome to Shreeharidoodh family !! - SWATKH'  # The message to send
+        }
 
-        # try:
-        #     whatsapp_response = requests.get(whatsapp_api_url, params=whatsapp_api_params)
-        #     print("WhatsApp API Response:", whatsapp_response.text)
-        #     self.request.session['whatsapp_response'] = whatsapp_response.text
-        #     messages.success(self.request, whatsapp_response.text)
-        # except requests.RequestException as e:
-        #     print("Error sending WhatsApp message:", e)
-        #     self.request.session['whatsapp_response'] = "Error: Failed to send WhatsApp message."
-        #     messages.error(self.request, "Error: Failed to send WhatsApp message.")
+        try:
+            sms_response = requests.get(sms_api_url, params=sms_api_params)
+            sms_response.raise_for_status()  # Raise an exception for HTTP errors
+            response_message = sms_response.text
+            print("SMS API Response:", response_message)
+            self.request.session['sms_response'] = response_message
+            # messages.success(self.request, response_message)
 
-      
+        except requests.RequestException as e:
+            print("Error sending SMS:", e)
+            error_message = f"Error: Failed to send SMS. {e}"
+            self.request.session['sms_response'] = error_message
+            messages.error(self.request, error_message)
+
         messages.success(self.request, "Registration successful!")
 
         subject = 'Welcome to Shri hari doodh !'
@@ -224,7 +277,7 @@ class UserRegistrationView(CreateView):
         context = super().get_context_data(**kwargs)
         if self.request.method == 'POST' and self.object:
             context['registration_successful'] = True
-        return context        
+        return context    
 
 class UserLoginView(LoginView):
    
@@ -607,6 +660,22 @@ def ChangeDetails(request, pk):
 
 
 
+# def order_create(request, product_id):
+#     if request.method == 'POST':
+#         form = OrderForm(request.POST)
+#         if form.is_valid():
+#             form.instance.created_by = request.user
+#             form.instance.product_id_id = product_id
+#             form.save()
+#             messages.success(request, 'Order Created Successfully.')
+#             return redirect('order_list')  # Redirect to a success page
+#     else:
+#         form = OrderForm(product_id=product_id)
+#     return render(request, 'shrihariapp/order_create.html', {'form': form,'product_id': product_id})
+
+
+
+
 def order_create(request, product_id):
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -614,11 +683,35 @@ def order_create(request, product_id):
             form.instance.created_by = request.user
             form.instance.product_id_id = product_id
             form.save()
-            messages.success(request, 'Order Created Successfully.')
+
+            # Extract phone number from the logged-in user
+            phone_number = request.user.phone  # Assuming the User model has a phone field
+            
+            # Prepare SMS API request details
+            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+            sms_api_params = {
+                'mobile': '9987952450',
+                'pass': 'Dreamz@2024',
+                'senderid': 'SWATKH',
+                'to': phone_number,  # Use the phone number from the logged-in user
+                'msg': 'Thank you for your order. You will receive an order confirmation message shortly! - SWATKH'  # The message to send
+            }
+
+            try:
+                sms_response = requests.get(sms_api_url, params=sms_api_params)
+                sms_response.raise_for_status()  # Raise an exception for HTTP errors
+                response_message = sms_response.text
+                print("SMS API Response:", response_message)
+                messages.success(request, f'Order Created Successfully.')
+            except requests.RequestException as e:
+                print("Error sending SMS:", e)
+                error_message = f"Error: Failed to send SMS. {e}"
+                messages.error(request, error_message)
+            
             return redirect('order_list')  # Redirect to a success page
     else:
         form = OrderForm(product_id=product_id)
-    return render(request, 'shrihariapp/order_create.html', {'form': form,'product_id': product_id})
+    return render(request, 'shrihariapp/order_create.html', {'form': form, 'product_id': product_id})
 
 
 
@@ -633,6 +726,22 @@ def OrderListView(request):
 
 
 
+# def order_createtwo(request, package_id):
+#     if request.method == 'POST':
+#         form = OrderFormtwo(request.POST)
+#         if form.is_valid():
+#             form.instance.created_by = request.user
+#             # form.instance.package_id = package_id
+#             form.save()
+#             messages.success(request, 'Order Created Successfully.')
+#             return redirect('daily_list')  # Redirect to a success page
+#     else:
+#         form = OrderFormtwo(package_id=package_id)
+#     return render(request, 'shrihariapp/order_createtwo.html', {'form': form,'package_id': package_id})
+
+
+
+
 def order_createtwo(request, package_id):
     if request.method == 'POST':
         form = OrderFormtwo(request.POST)
@@ -640,11 +749,35 @@ def order_createtwo(request, package_id):
             form.instance.created_by = request.user
             # form.instance.package_id = package_id
             form.save()
-            messages.success(request, 'Order Created Successfully.')
+
+            # Extract phone number from the logged-in user
+            phone_number = request.user.phone  # Assuming the User model has a phone field
+            
+            # Prepare SMS API request details
+            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+            sms_api_params = {
+                'mobile': '9987952450',
+                'pass': 'Dreamz@2024',
+                'senderid': 'SWATKH',
+                'to': phone_number, 
+                'msg': 'Thank you for your order. You will receive an order confirmation message shortly! - SWATKH'
+            }
+
+            try:
+                sms_response = requests.get(sms_api_url, params=sms_api_params)
+                sms_response.raise_for_status()  # Raise an exception for HTTP errors
+                response_message = sms_response.text
+                print("SMS API Response:", response_message)
+                messages.success(request, f'Order Created Successfully. ')
+            except requests.RequestException as e:
+                print("Error sending SMS:", e)
+                error_message = f"Error: Failed to send SMS. {e}"
+                messages.error(request, error_message)
+            
             return redirect('daily_list')  # Redirect to a success page
     else:
         form = OrderFormtwo(package_id=package_id)
-    return render(request, 'shrihariapp/order_createtwo.html', {'form': form,'package_id': package_id})
+    return render(request, 'shrihariapp/order_createtwo.html', {'form': form, 'package_id': package_id})
 
 
 
