@@ -60,3 +60,21 @@ let dropdownContent = dropdown.querySelector(".dropdown-content");
     });
 
 
+// let menuicn2 = document.querySelector(".menuicn2"); 
+// let nav2 = document.querySelector(".navcontainer2"); 
+
+// menuicn.addEventListener("click", () => { 
+//   nav.classList.toggle("navclose"); 
+// })
+
+let dropdown2 = document.querySelector(".dropdown2");
+let dropdownContent2 = dropdown2.querySelector(".dropdown-content2");
+
+    dropdown2.addEventListener("click", () => {
+        // Toggle the dropdown content visibility
+        dropdownContent2.style.display = (dropdownContent2.style.display === "none" || dropdownContent2.style.display === "") ? "block" : "none";
+
+        // Toggle the arrow direction
+        dropdown2.classList.toggle("open");
+    });
+
