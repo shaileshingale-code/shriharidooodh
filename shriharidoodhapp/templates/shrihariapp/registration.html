@@ -294,7 +294,7 @@ h1 {
         <div class="col-md-6">
     <div class="form-group">
       
-        <label for="{{ form.email.id_for_label }}">Full Names:</label>
+        <label for="{{ form.email.id_for_label }}">Full Name:</label>
 
         <input type="text" class="form-control" name="customer_name" value="{{ form.customer_name.value|default_if_none }}" pattern="^[a-zA-Z\s]*$" title="Only alphabets and spaces are allowed" placeholder="Enter Your full name">
         {% for error in form.customer_name.errors %}
@@ -313,7 +313,7 @@ h1 {
         <div class="col-md-6">
     <div class="form-group">
         <label for="{{ form.email.id_for_label }}">Username/Email</label>
-        <input type="email" class="form-control" name="username" placeholder="Enter Your Username/Email" value="{{ form.username.value|default_if_none }}">
+        <input type="text" class="form-control" name="username"  placeholder="Enter Your Username/Email" value="{{ form.username.value|default_if_none }}">
         {% for error in form.username.errors %}
             <small class="form-text text-danger">{{ error }}</small>
         {% endfor %}
@@ -399,7 +399,7 @@ h1 {
                 
       <div>
                     <div align="right">
-                    <img src="/media/profile_images/running-cow.gif" class="moving-image" style="width:40%;margin-top: -30px;"> 
+                    <img src="/media/profile_images/running-cow.gif" class="moving-image" style="width:40%;margin-top: -50px;"> 
                     </div>
                   </div>
      

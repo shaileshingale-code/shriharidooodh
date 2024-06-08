@@ -94,7 +94,18 @@
  {% for error in form.package_image.errors %}
         <small class="form-text text-danger">{{ error }}</small>
     {% endfor %}
+  
 
+   <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Description:</label>
+        <textarea class="form-control" name="description" value="{{ form.description.value|default_if_none }}" required>{{ form.description.value|default_if_none }}</textarea>
+
+        
+          {% for error in form.description.errors %}
+            <small class="form-text text-danger">{{ error }}</small>
+        {% endfor %}
+        
+    </div>
 
     <button class="btn btn-primary" type="submit">Add </button> 
 </form>
@@ -109,7 +120,7 @@
   <script src="/media/index.js"></script> 
   <script src="/media/tinymce/tinymce.min.js"></script>
 
-  <script>tinymce.init({selector:'textarea'});</script>
+  <!-- <script>tinymce.init({selector:'textarea'});</script> -->
 
 
 

@@ -1,3 +1,4 @@
+ {% load custom_filters %}
  {% include 'shrihariapp/navigation.html' %}
     <div class="main" style="margin-top: -100px;height:120%"> 
        {%  if  user.role == 'admin' %}
@@ -42,7 +43,7 @@
                     {{ product.product_name }}( {{ product.varient }}),
                 {% endfor %} </h6>
            <h6><b> Days: </b>{{ package.package_days }}  </h4> 
-          <!-- <h6><b> gap: </b>{{ package.gap_days }}  </h4>  -->
+          <h6><b>  </b>{{ package.description|default_if_none }}  </h4> 
             <br><br>
             <div align="center">
                 {%  if  user.role == 'admin' %}
@@ -98,7 +99,7 @@
                     {{ product.product_name }}( {{ product.varient }}),
                 {% endfor %} </h6>
            <h6><b> Days: </b>{{ package.package_days }}  </h4> 
-          <!-- <h6><b> gap: </b>{{ package.gap_days }}  </h4>  -->
+          <h6>{{ package.description|default_if_none }}  </h4> 
             <br><br>
             <div align="center">
                 {%  if  user.role == 'admin' %}

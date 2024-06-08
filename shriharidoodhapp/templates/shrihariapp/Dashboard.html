@@ -1,9 +1,17 @@
  {% include 'shrihariapp/navigation.html' %}
     <div class="main"> 
       <div class="row-cards">
-      <a href="{% url 'customer_list' %}"><div class="card card1">Customers</div></a>
-      <a href="{% url 'product_list' %}"><div class="card card2">Products</div></a>
-      <a href="{% url 'order_list' %}"><div class="card card3">Orders</div></a>
+      <a href="{% url 'customer_list' %}"><div class="card card1">Customers
+      <span>{{ customer_count }}</span></div></a>
+      <a href="{% url 'product_list' %}"><div class="card card2">Products
+      <span>{{ product_count }}</span></div></a>
+      <a href="{% url 'order_list' %}"><div class="card card3">One time Order
+       <span>{{ order_count1 }}</span></div></a>
+       <a href="{% url 'daily_list' %}"><div class="card card4">Subcribers
+       <span>{{ order_count2 }}</span></div></a>
+       <a href="{% url 'Delievery_list' %}"><div class="card card5"> People Assigned <br>to Delivery Boy 
+                  <span> {{ delivery_count_by_order }}</span>
+       </div></a>
      <!--  <a href=""><div class="card card4">Download Center</div></a>
       <a href=""><div class="card card5">My Documents</div></a>
       <a href=""><div class="card card6">Fine List</div></a>

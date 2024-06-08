@@ -25,7 +25,7 @@
   <header style="width:21.26vw;box-shadow: 0px 0px 0px ;background-image: linear-gradient(to right, #f7f7f7  0%, #dce8f4   70%);"> 
 
     <div class="logosec"> 
-      <div class="logo"><img class="logoMain" src="/media/profile_images/image.png" alt="logo" style="width:78px"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
+      <div class="logo"><a  href="{% url 'dashboard' %}"><img class="logoMain" src="/media/profile_images/image.png" alt="logo" style="width:78px"> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> 
       <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210182541/Untitled-design-(30).png"
         class="icn menuicn"
         id="menuicn"
@@ -96,27 +96,30 @@
           {% endif %}
 
           
- <!-- 
+           {%  if  user.role == 'admin' %}
          <div class="dropdown">
             <div class="nav-option option6">
               <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/4.png" class="nav-img" alt="settings">
-              <h3>Settings</h3>
+              <h3>Delivery</h3>
               <div class="arrow"></div>
             </div> 
             <div class="dropdown-content">
-              Dropdown options go here -->
-            <!--  <a href="#">Option 1</a>
-              <a href="#">Option 2</a>
-              <a href="#">Option 3</a>
+             
+           
+              <a href="{% url 'Delievery_list' %}" style="padding-left:70px !important">Subscription</a>
+              <a href="{% url 'Delievery_setuptwo' %}"  style="padding-left:70px !important">One Time</a>
             </div>
-          </div> -->  
-
+          </div> 
+            {% endif %}
            {%  if  user.role == 'admin' %}
  
            <div class="option2 nav-option"> 
             <i class="fa fa-group" style="font-size: 24px;"></i>
             <a href="{% url 'customer_list' %}"> <h3>  Customer</h3> </a>
           </div> 
+
+
+
 
           {% endif %}
 
@@ -132,7 +135,7 @@
           {% endif %}
 
 
-           {%  if  user.role == 'admin' %}
+          <!--  {%  if  user.role == 'admin' %}
  
            <div class="option2 nav-option"> 
             <i class="fa-solid fa-truck"></i>
@@ -149,7 +152,7 @@
             <a href="{% url 'Delievery_setuptwo' %}"> <h3>  Delivery Setup For Single Order</h3> </a>
           </div> 
 
-          {% endif %}
+          {% endif %} -->
 
 
 
@@ -175,7 +178,7 @@
           </div> 
 
 
-          {%  if  user.role == 'admin' %}
+          <!-- {%  if  user.role == 'admin' %}
           <div class="nav-option logout"> 
               <i class="fa-solid fa-money-bill-trend-up"></i>
            <a href="{% url 'order_list' %}"> <h3>Orders</h3> </a>
@@ -189,23 +192,40 @@
            <a href="{% url 'order_list' %}"> <h3> My Orders</h3> </a>
           </div> 
 
-          {% endif %}
+          {% endif %} -->
 
-           {%  if  user.role == 'admin' %}
+
+
+
+          <div class="dropdown2">
+            <div class="nav-option option6">
+              <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/4.png" class="nav-img" alt="settings">
+              <h3>Orders</h3>
+              <div class="arrow"></div>
+            </div> 
+            <div class="dropdown-content2">
+             
+           
+              <a href="{% url 'daily_list' %}" style="padding-left:70px !important">Subscription</a>
+              <a href="{% url 'order_list' %}"  style="padding-left:70px !important">One Time</a>
+            </div>
+          </div> 
+
+          <!--  {%  if  user.role == 'admin' %}
 
           <div class="nav-option logout"> 
               <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
-           <a href="{% url 'daily_list' %}"> <h3> Daily Orders</h3> </a>
+           <a href="{% url 'daily_list' %}"> <h3> One Time Order</h3> </a>
           </div> 
 
            {% else %}
 
            <div class="nav-option logout" {% if user.role == 'DeliveryBoy' %} style="display:none" {% endif %}> 
               <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
-           <a href="{% url 'daily_list' %}"> <h3> My Daily Orders</h3> </a>
+           <a href="{% url 'daily_list' %}"> <h3>One Time Order</h3> </a>
           </div>
 
-          {% endif %}
+          {% endif %} -->
 
           <div class="nav-option logout"> 
               <i class="fa fa-power-off" style="font-size: 24px;"></i>

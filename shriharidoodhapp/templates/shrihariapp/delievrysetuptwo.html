@@ -80,9 +80,9 @@
 </div>
 
 <div class="row">
-     <div class="form-group col-md-6">
+     <div class="form-group col-md-6" style="display:none">
         <label>Date </label>
-       <input type="date" name="Date"  class="form-control" required>
+       <input type="date" name="Date"  class="form-control" >
    
           {% for error in form.Date.errors %}
             <small class="form-text text-danger">{{ error }}</small>
