@@ -248,3 +248,18 @@ let dropdownContent2 = dropdown2.querySelector(".dropdown-content2");
         dropdown2.classList.toggle("open");
     });
     </script>
+
+
+    <script>
+
+      let dropdown = document.querySelector(".dropdown");
+let dropdownContent = dropdown.querySelector(".dropdown-content");
+
+    dropdown.addEventListener("click", () => {
+        // Toggle the dropdown content visibility
+        dropdownContent.style.display = (dropdownContent.style.display === "none" || dropdownContent.style.display === "") ? "block" : "none";
+
+        // Toggle the arrow direction
+        dropdown.classList.toggle("open");
+    });
+    </script>
