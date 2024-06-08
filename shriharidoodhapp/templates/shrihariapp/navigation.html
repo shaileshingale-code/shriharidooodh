@@ -237,6 +237,15 @@
     </div> 
 
     <script>
+
+      let menuicn = document.querySelector(".menuicn"); 
+let nav = document.querySelector(".navcontainer"); 
+
+menuicn.addEventListener("click", () => { 
+  nav.classList.toggle("navclose"); 
+})
+
+
       let dropdown2 = document.querySelector(".dropdown2");
 let dropdownContent2 = dropdown2.querySelector(".dropdown-content2");
 
