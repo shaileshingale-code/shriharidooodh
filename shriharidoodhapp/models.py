@@ -32,7 +32,7 @@ class Products(models.Model):
     saleprice = models.IntegerField()
     discount = models.IntegerField(blank=True, null=True)
     product_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
-
+    description = models.CharField(blank=True, null=True ,max_length=500)
 
 class Package(models.Model):
     apply_by = models.CharField(max_length=100)
@@ -42,6 +42,7 @@ class Package(models.Model):
     package_days = models.IntegerField()
     gap_days = models.IntegerField(blank=True, null=True)
     package_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    description = models.CharField(blank=True, null=True ,max_length=500)
 
 class ProductPackageMapping(models.Model):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
@@ -103,6 +104,7 @@ class daily_orders(models.Model):
     package_id = models.ForeignKey(Package, on_delete=models.CASCADE)
     delievery_address = models.CharField(max_length=100,blank=True, null=True)
     customer_plan = models.CharField(max_length=100,blank=True, null=True)
+    description = models.CharField(blank=True, null=True ,max_length=500)
    
 
     
@@ -119,4 +121,9 @@ class Delievery_Management(models.Model):
     orderid = models.ForeignKey(orders, on_delete=models.CASCADE,blank=True, null=True)  
     daily_order_id = models.ForeignKey(daily_orders, on_delete=models.CASCADE,blank=True, null=True)
     delievery_status = models.IntegerField(default=0)
+    delievery_type = models.CharField(blank=True, null=True ,max_length=100)
+
+
+
+
     

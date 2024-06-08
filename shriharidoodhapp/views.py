@@ -24,6 +24,8 @@ from django import template
 from datetime import date
 from django.utils import timezone
 from django.contrib.auth import update_session_auth_hash
+import random
+from django.db.models import Count
 
 # from .models import Users
 from .models import Products
@@ -292,14 +294,27 @@ class UserLoginView(LoginView):
 #     return render(request, 'shrihariapp/Dashboard.html')
 
 @never_cache
-@login_required    
+@login_required
 def Dashboard(request):
-    
     user = request.user
     if user.role == 'admin':
-        return render(request, 'shrihariapp/Dashboard.html')  
+        customer_count = Customer_list.objects.count()
+        product_count = Products.objects.count()
+        order_count1 = orders.objects.count()
+        order_count2 = daily_orders.objects.count()
+        delivery_count_by_order = Delievery_Management.objects.values('orderid').annotate(count=Count('orderid')).count()
+        
+        context = {
+            'customer_count': customer_count,
+            'product_count': product_count,
+            'order_count1': order_count1,
+            'order_count2': order_count2,
+            'delivery_count_by_order':delivery_count_by_order
+        }
+        
+        return render(request, 'shrihariapp/Dashboard.html', context)
     elif user.role == 'customer':
-        return redirect('product_list')   
+        return redirect('product_list')
     else:
         return redirect('Delievery_list')
         
@@ -935,9 +950,17 @@ class DelieverySetupTwo(CreateView):
         return context
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, 'Record Added successfully!')
-        return response            
+        delivery_management = form.save(commit=False)
+        orderidofdo = delivery_management.orderid
+ 
+        selected_package = orders.objects.get(pk=orderidofdo.pk)  
+        delivery_management.Date = selected_package.order_date
+        delivery_management.delievery_type = "single order"
+        
+        
+        delivery_management.save()
+        
+        return super().form_valid(form)            
 
 
 # class DelieverySetup(FormView):
@@ -1162,6 +1185,36 @@ def stopforcustomer(request):
 
 
 
+def send_otp(phone_number, otp):
+    sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+    sms_api_params = {
+        'mobile': '9987952450',
+        'pass': 'Dreamz@2024',
+        'senderid': 'SWATKH',
+        'to': phone_number,
+        # 'msg': f'Your OTP for password reset is {otp}.'
+        'msg': f'Thank you for your order. You will receive an order confirmation message shortly! - SWATKH'
+    }
+    response = requests.get(sms_api_url, params=sms_api_params)
+    return response.status_code == 200
+
+# def forgot_password(request):
+#     if request.method == 'POST':
+#         form = UsernameForm(request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             try:
+#                 user = Customer_list.objects.get(username=username)
+#                 request.session['reset_user_id'] = user.id
+#                 return redirect('reset_password')
+#             except Customer_list.DoesNotExist:
+#                 messages.error(request, 'Username not found in our records.')
+#     else:
+#         form = UsernameForm()
+#     return render(request, 'shrihariapp/forgot_password.html', {'form': form})
+
+
+
 def forgot_password(request):
     if request.method == 'POST':
         form = UsernameForm(request.POST)
@@ -1169,27 +1222,71 @@ def forgot_password(request):
             username = form.cleaned_data['username']
             try:
                 user = Customer_list.objects.get(username=username)
+                otp = random.randint(100000, 999999)  # Generate a 6-digit OTP
                 request.session['reset_user_id'] = user.id
-                return redirect('reset_password')
+                request.session['otp'] = otp
+                if send_otp(user.phone, otp):
+                    return redirect('verify_otp')
+                else:
+                    messages.error(request, 'Failed to send OTP. Please try again.')
             except Customer_list.DoesNotExist:
                 messages.error(request, 'Username not found in our records.')
     else:
         form = UsernameForm()
     return render(request, 'shrihariapp/forgot_password.html', {'form': form})
 
-def reset_password(request):
-    user_id = request.session.get('reset_user_id')
-    if not user_id:
-        return redirect('forgot_password')
 
-    user = Customer_list.objects.get(id=user_id)
+
+
+
+
+
+
+def verify_otp(request):
     if request.method == 'POST':
-        form = CustomSetPasswordForm(user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user) 
-            messages.success(request, 'Your password has been set. You can now log in with the new password.')
-            return redirect('admin_login')
-    else:
-        form = CustomSetPasswordForm(user)
-    return render(request, 'shrihariapp/reset_password.html', {'form': form})
+        entered_otp = request.POST.get('otp')
+        if entered_otp == str(request.session.get('otp')):
+            return redirect('reset_password')
+        else:
+            messages.error(request, 'Invalid OTP. Please try again.')
+    return render(request, 'shrihariapp/verify_otp.html')
+
+
+def send_notification(phone_number):
+    sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+    sms_api_params = {
+        'mobile': '9987952450',
+        'pass': 'Dreamz@2024',
+        'senderid': 'SWATKH',
+        'to': phone_number,
+        'msg': 'Your password has been changed successfully. - SWATKH'
+    }
+    response = requests.get(sms_api_url, params=sms_api_params)
+    return response.status_code == 200
+    
+
+def reset_password(request):
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        user_id = request.session.get('reset_user_id')
+        try:
+            user = Customer_list.objects.get(id=user_id)
+            user.password = make_password(new_password)
+            user.save()
+
+            # Send email notification
+            subject = 'Welcome to Shri hari doodh!'
+            message = 'Your password has been changed successfully. Thank you for using Shri Hari doodh.'
+            from_email = 'info@shreeharidoodh.in'
+            to_email = user.username
+            send_mail(subject, message, from_email, [to_email])
+
+            # Send SMS notification
+            if user.phone:
+                send_notification(user.phone)
+
+            messages.success(request, 'Your password has been reset successfully and notifications have been sent.')
+            return redirect('login')
+        except Customer_list.DoesNotExist:
+            messages.error(request, 'User not found. Please try again.')
+    return render(request, 'shrihariapp/reset_password.html')
