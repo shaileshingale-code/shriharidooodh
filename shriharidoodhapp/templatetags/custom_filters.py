@@ -18,3 +18,10 @@ def mul(value, arg):
 @register.filter
 def default_if_none(value, default_value=''):
     return default_value if value is None else value    
+
+
+@register.filter
+def break_after_20_chars(value):
+    if not value:
+        return ''
+    return '<br>'.join(value[i:i+20] for i in range(0, len(value), 20))    
