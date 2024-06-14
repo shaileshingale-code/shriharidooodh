@@ -1,3 +1,4 @@
+ {% load custom_filters %}
  {% include 'shrihariapp/navigation.html' %}
     <div class="main" style="margin-top: -100px;height:120%"> 
      {%  if  user.role == 'admin' %}
@@ -40,7 +41,7 @@
          
             <h2>{{ product.product_name }} </h2>
             <h6>{{ product.varient }} </h6>
-            <h6>{{ product.description|default_if_none|break_after_20_chars|safe }} </h6>
+            <h6>{{ product.description|break_after_20_chars|safe }} </h6>
            <h6><del>Price: {{ product.mrpprice }}</del>
                    <strong>{{ product.discount }} %</strong>
            </h6>
@@ -92,7 +93,7 @@
          
             <h2>{{ product.product_name }} </h2>
             <h6>{{ product.varient }} </h6>
-            <h6>{{ product.description|default_if_none|break_after_20_chars|safe }} </h6>
+            <h6>{{ product.description|break_after_20_chars|safe }} </h6>
            <h6><del>Price: {{ product.mrpprice }}</del>
                    <strong>Save {{ product.discount }} %</strong>
            </h6>
