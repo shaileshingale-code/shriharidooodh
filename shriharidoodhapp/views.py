@@ -809,8 +809,8 @@ def order_create(request, product_id):
                     payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
                     return redirect(payment_url)
                 else:
-                    payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
-                    return redirect(payment_url)
+                    error_message = json.dumps(response_data, indent=2)
+                    messages.error(request, f'Failed to initiate payment. Response: {error_message}')
                     return redirect('order_list')
 
             except requests.RequestException as e:
