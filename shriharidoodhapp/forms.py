@@ -110,7 +110,7 @@ class PackageForm(forms.ModelForm):
 
     class Meta:
         model = Package
-        fields = ['apply_by', 'products', 'package_name', 'package_price' ,'package_days','package_image','gap_days']
+        fields = ['apply_by', 'products', 'package_name', 'package_price' ,'package_days','package_image','gap_days','description']
         labels = {
             'apply_by': 'Apply By',
             'products': 'Products',
@@ -119,6 +119,7 @@ class PackageForm(forms.ModelForm):
             'package_days': 'package_days',
             'package_image': 'package_image',
             'gap_days': 'gap_days',
+            'description': 'description',
         }
         help_texts = {
             'apply_by': 'Please enter your mail id',
@@ -127,6 +128,7 @@ class PackageForm(forms.ModelForm):
             'package_price': 'Enter package price',
             'package_days': 'Enter package days',
             'gap_days': 'Enter gap days',
+            'description': 'description',
         }
 
 

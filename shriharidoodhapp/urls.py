@@ -19,7 +19,7 @@ from .views import AddCustomerView
 from .views import CustomerListView
 from .views import Customerdelete
 from .views import Customeredit
-from .views import order_create
+from .views import order_create, callback
 from .views import order_createtwo
 from .views import OrderListView
 from .views import DailyOrderListView
@@ -75,7 +75,8 @@ urlpatterns = [
      path('boyedit/<int:pk>/edit/', Boyedit, name='boy_edit'),
      path('changedetails/<int:pk>/edit/', ChangeDetails, name='change_details'),
      path('changedetailss/<int:pk>/edit/', ChangeDetailss, name='change_detailss'),
-     path('order/create/<int:product_id>/', order_create, name='order_create'),
+     path('order_create/<int:product_id>/', order_create, name='order_create'),
+     path('callback/', callback, name='callback'),
      path('order/createtwo/<int:package_id>/', order_createtwo, name='order_createtwo'),
      path('orderlist/', OrderListView, name='order_list'),
      path('dailylist/', DailyOrderListView, name='daily_list'),
@@ -93,8 +94,9 @@ urlpatterns = [
      path('forgot-password/', views.forgot_password, name='forgot_password'),
      path('verify-otp/', views.verify_otp, name='verify_otp'),
      path('reset-password/', views.reset_password, name='reset_password'),
-     path('send-notification/', views.send_notification, name='send_notification')
- 
+     path('send-notification/', views.send_notification, name='send_notification'),
+      path('shriharidoodhapp/callback-url/', views.callback, name='callback'),
+      path('shriharidoodhapp/redirect-url/', views.redirect, name='redirect'),
 
 
 

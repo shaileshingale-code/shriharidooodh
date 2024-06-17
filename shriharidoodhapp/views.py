@@ -21,12 +21,18 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from datetime import datetime, timedelta
 from django import template
+import json
+from datetime import datetime
 from datetime import date
 from django.utils import timezone
 from django.contrib.auth import update_session_auth_hash
 import random
 from django.db.models import Count
-
+from django.conf import settings
+import requests
+import hashlib
+import json
+import base64
 # from .models import Users
 from .models import Products
 from .models import Delievery_Management
@@ -691,42 +697,136 @@ def ChangeDetails(request, pk):
 
 
 
+# def order_create(request, product_id):
+#     if request.method == 'POST':
+#         form = OrderForm(request.POST)
+#         if form.is_valid():
+#             form.instance.created_by = request.user
+#             form.instance.product_id_id = product_id
+#             form.save()
+
+#             # Extract phone number from the logged-in user
+#             phone_number = request.user.phone  # Assuming the User model has a phone field
+            
+#             # Prepare SMS API request details
+#             sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+#             sms_api_params = {
+#                 'mobile': '9987952450',
+#                 'pass': 'Dreamz@2024',
+#                 'senderid': 'SWATKH',
+#                 'to': phone_number,  # Use the phone number from the logged-in user
+#                 'msg': 'Thank you for your order. You will receive an order confirmation message shortly! - SWATKH'  # The message to send
+#             }
+
+#             try:
+#                 sms_response = requests.get(sms_api_url, params=sms_api_params)
+#                 sms_response.raise_for_status()  # Raise an exception for HTTP errors
+#                 response_message = sms_response.text
+#                 print("SMS API Response:", response_message)
+#                 messages.success(request, f'Order Created Successfully.')
+#             except requests.RequestException as e:
+#                 print("Error sending SMS:", e)
+#                 error_message = f"Error: Failed to send SMS. {e}"
+#                 messages.error(request, error_message)
+            
+#             return redirect('order_list')  # Redirect to a success page
+#     else:
+#         form = OrderForm(product_id=product_id)
+#     return render(request, 'shrihariapp/order_create.html', {'form': form, 'product_id': product_id})
+
+
+
+
+
+
+
+MERCHANT_ID = "M22CEV0ACYZCY"
+SALT_KEY = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"
+SALT_INDEX = "1"
+
+BASE_URL = "https://api.phonepe.com/apis/hermes"
+INITIATE_PAYMENT_URL = f"{BASE_URL}/pg/v1/pay"
+STATUS_CHECK_URL = f"{BASE_URL}/pg/v1/status/{{transactionId}}"
+
+def calculate_checksum(payload_str):
+    # Base64 encode the payload
+    payload_base64 = base64.b64encode(payload_str.encode('utf-8')).decode('utf-8')
+    # Concatenate base64 encoded payload, endpoint path, and salt key
+    checksum_input = f"{payload_base64}/pg/v1/pay{SALT_KEY}"
+    # Create SHA256 hash
+    checksum_hash = hashlib.sha256(checksum_input.encode('utf-8')).hexdigest()
+    # Append the salt index
+    x_verify_header = f"{checksum_hash}###{SALT_INDEX}"
+    return x_verify_header
+
 def order_create(request, product_id):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             form.instance.created_by = request.user
             form.instance.product_id_id = product_id
-            form.save()
+            order = form.save()
 
-            # Extract phone number from the logged-in user
-            phone_number = request.user.phone  # Assuming the User model has a phone field
-            
-            # Prepare SMS API request details
-            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
-            sms_api_params = {
-                'mobile': '9987952450',
-                'pass': 'Dreamz@2024',
-                'senderid': 'SWATKH',
-                'to': phone_number,  # Use the phone number from the logged-in user
-                'msg': 'Thank you for your order. You will receive an order confirmation message shortly! - SWATKH'  # The message to send
+            phone_number = request.user.phone
+            product = Products.objects.get(id=product_id)
+            amount = int(product.saleprice * 100)
+
+            merchant_transaction_id = f"MT{order.id}_{int(datetime.now().timestamp())}"
+
+            payload = {
+                "merchantId": MERCHANT_ID,
+                "merchantTransactionId": merchant_transaction_id,
+                "merchantUserId": request.user.username,
+                "amount": amount,
+                "redirectUrl": "http://localhost:8000/shriharidoodhapp/orderlist/",
+                "redirectMode": "REDIRECT",
+                "callbackUrl": "http://localhost:8000/shriharidoodhapp/orderlist/",
+                "mobileNumber": phone_number,
+                "paymentInstrument": {
+                    "type": "PAY_PAGE"
+                }
+            }
+
+            payload_str = json.dumps(payload)
+            x_verify_header = calculate_checksum(payload_str)
+
+            headers = {
+                'Content-Type': 'application/json',
+                'X-VERIFY': x_verify_header
             }
 
             try:
-                sms_response = requests.get(sms_api_url, params=sms_api_params)
-                sms_response.raise_for_status()  # Raise an exception for HTTP errors
-                response_message = sms_response.text
-                print("SMS API Response:", response_message)
-                messages.success(request, f'Order Created Successfully.')
+                response = requests.post(INITIATE_PAYMENT_URL, headers=headers, data=payload_str)
+                response_data = response.json()
+                
+                # Log the request and response for debugging
+                print(f"Request URL: {INITIATE_PAYMENT_URL}")
+                print(f"Request Headers: {headers}")
+                print(f"Request Payload: {payload_str}")
+                print(f"Response: {response.text}")
+
+                if response_data.get('success'):
+                    payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
+                    return redirect(payment_url)
+                else:
+                     payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
+                    return redirect(payment_url)
+                    return redirect('order_list')
+
             except requests.RequestException as e:
-                print("Error sending SMS:", e)
-                error_message = f"Error: Failed to send SMS. {e}"
-                messages.error(request, error_message)
-            
-            return redirect('order_list')  # Redirect to a success page
+                messages.error(request, f'Error: Failed to communicate with PhonePe API. {e}')
+                return redirect('order_list')
+
     else:
         form = OrderForm(product_id=product_id)
+
     return render(request, 'shrihariapp/order_create.html', {'form': form, 'product_id': product_id})
+
+def callback(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        transaction_id = data['transactionId']
+        return JsonResponse({"status": "Callback received"}, status=200)
 
 
 
