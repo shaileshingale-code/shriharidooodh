@@ -809,7 +809,7 @@ def order_create(request, product_id):
                     payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
                     return redirect(payment_url)
                 else:
-                     payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
+                    payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
                     return redirect(payment_url)
                     return redirect('order_list')
 
