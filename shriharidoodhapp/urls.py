@@ -95,8 +95,8 @@ urlpatterns = [
      path('verify-otp/', views.verify_otp, name='verify_otp'),
      path('reset-password/', views.reset_password, name='reset_password'),
      path('send-notification/', views.send_notification, name='send_notification'),
-      path('shriharidoodhapp/callback-url/', views.callback, name='callback'),
-      path('shriharidoodhapp/redirect-url/', views.redirect, name='redirect'),
+     path('shriharidoodhapp/callback-url/', views.callback, name='callback'),
+     path('shriharidoodhapp/redirect-url/', views.redirect, name='redirect'),
 
 
 

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 import requests
 from django.urls import reverse_lazy
+from django.contrib.auth.hashers import make_password
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView
 from django.views.generic.edit import UpdateView
@@ -740,24 +741,34 @@ def ChangeDetails(request, pk):
 
 
 
-MERCHANT_ID = "M22CEV0ACYZCY"
-SALT_KEY = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"
+MERCHANT_ID = "PGTESTPAYUAT148"
+SALT_KEY = "046d9f63-bf3b-4b74-9b8e-93121160573e"
 SALT_INDEX = "1"
 
-BASE_URL = "https://api.phonepe.com/apis/hermes"
+BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox"
 INITIATE_PAYMENT_URL = f"{BASE_URL}/pg/v1/pay"
 STATUS_CHECK_URL = f"{BASE_URL}/pg/v1/status/{{transactionId}}"
 
 def calculate_checksum(payload_str):
     # Base64 encode the payload
-    payload_base64 = base64.b64encode(payload_str.encode('utf-8')).decode('utf-8')
-    # Concatenate base64 encoded payload, endpoint path, and salt key
+    payload_base64 = base64.b64encode(payload_str.encode('utf-8'))
     checksum_input = f"{payload_base64}/pg/v1/pay{SALT_KEY}"
-    # Create SHA256 hash
     checksum_hash = hashlib.sha256(checksum_input.encode('utf-8')).hexdigest()
     # Append the salt index
-    x_verify_header = f"{checksum_hash}###{SALT_INDEX}"
+    x_verify_header = f"{checksum_hash}{SALT_INDEX}"
     return x_verify_header
+
+
+
+def base64_encode(input_dict):
+   
+    json_data = jsons.dumps(input_dict)
+   
+    data_bytes = json_data.encode('utf-8')
+    # Perform Base64 encoding and return the result as a string
+    return base64.b64encode(data_bytes).decode('utf-8')
+
+
 
 def order_create(request, product_id):
     if request.method == 'POST':
@@ -768,42 +779,53 @@ def order_create(request, product_id):
             order = form.save()
 
             phone_number = request.user.phone
+            username = request.user.username
+
             product = Products.objects.get(id=product_id)
             amount = int(product.saleprice * 100)
 
             merchant_transaction_id = f"MT{order.id}_{int(datetime.now().timestamp())}"
 
             payload = {
-                "merchantId": MERCHANT_ID,
-                "merchantTransactionId": merchant_transaction_id,
-                "merchantUserId": request.user.username,
-                "amount": amount,
-                "redirectUrl": "http://localhost:8000/shriharidoodhapp/orderlist/",
-                "redirectMode": "REDIRECT",
-                "callbackUrl": "http://localhost:8000/shriharidoodhapp/orderlist/",
-                "mobileNumber": phone_number,
-                "paymentInstrument": {
+                  "merchantId": "PGTESTPAYUAT148",
+                  "merchantTransactionId": "MT7850590068188104",
+                  "merchantUserId": "MUID123",
+                  "amount": "10000",
+                  "redirectUrl": "http://localhost:8000/shriharidoodhapp/redirect-url/",
+                  "redirectMode": "REDIRECT",
+                  "callbackUrl": "http://localhost:8000/shriharidoodhapp/callback-url/",
+                  "mobileNumber": "9999999999",
+                  "paymentInstrument": {
                     "type": "PAY_PAGE"
-                }
+                  }
             }
 
+
+
             payload_str = json.dumps(payload)
+
+        
+            payload_bytes = payload_str.encode('utf-8')
+
+            payload_base64 = base64.b64encode(payload_bytes).decode('utf-8')
+
+         
+
             x_verify_header = calculate_checksum(payload_str)
 
             headers = {
                 'Content-Type': 'application/json',
-                'X-VERIFY': x_verify_header
+                'X-VERIFY': "151174730ca711fd80ed9affbb67bc93853e74edac7a193cc1a9c4a845998b1b###1"
             }
 
             try:
                 response = requests.post(INITIATE_PAYMENT_URL, headers=headers, data=payload_str)
                 response_data = response.json()
                 
-                # Log the request and response for debugging
+            
                 print(f"Request URL: {INITIATE_PAYMENT_URL}")
-                print(f"Request Headers: {headers}")
-                print(f"Request Payload: {payload_str}")
-                print(f"Response: {response.text}")
+                print(f"Request Headers: {payload}")
+                print(f"Response: {x_verify_header}")
 
                 if response_data.get('success'):
                     payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
@@ -1213,12 +1235,24 @@ def stop(request):
         leave_instance.save()
 
         customer_email = leave_instance.created_by.username
+        customer_phone = leave_instance.created_by.phone
 
         subject = 'Subscription Pause Request'
         message = f'Subscription has been paused for order :{leave_id}'
         from_email = 'info@shreeharidoodh.in' 
         to_email = customer_email  
         send_mail(subject, message, from_email, [to_email])
+
+
+        sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+        sms_api_params = {
+            'mobile': '9987952450',
+            'pass': 'Dreamz@2024',
+            'senderid': 'SWATKH',
+            'to': customer_phone,
+            'msg': f'Alert! Order ID: {leave_id} has been PAUSED.- SWATI Shree Hari Doodh'
+        }
+        response = requests.get(sms_api_url, params=sms_api_params)
 
         return JsonResponse({'message': 'Service Has Been Paused'})
     else:
@@ -1273,11 +1307,23 @@ def stopforcustomer(request):
         leave_instance.approved_status = 2
         leave_instance.save()
 
+        customer_phone = leave_instance.created_by.phone
+
         subject = 'Subscription Pause Request'
         message = f'You have recieved request to pause the service for order ID {leave_id}. Please Login to admin Panel.'
         from_email = 'info@shreeharidoodh.in' 
         to_email = 'info@shreeharidoodh.in'  
         send_mail(subject, message, from_email, [to_email])
+
+        sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+        sms_api_params = {
+            'mobile': '9987952450',
+            'pass': 'Dreamz@2024',
+            'senderid': 'SWATKH',
+            'to': customer_phone,
+            'msg': f'We acknowledge that you want to pause/hold your order ID: {leave_id} - SWATI Shree Hari Doodh'
+        }
+        response = requests.get(sms_api_url, params=sms_api_params)
 
         return JsonResponse({'message': 'Request For Pause Subscription Has been raised Wait for admin Approval'})
     else:
@@ -1293,8 +1339,10 @@ def send_otp(phone_number, otp):
         'senderid': 'SWATKH',
         'to': phone_number,
         # 'msg': f'Your OTP for password reset is {otp}.'
-        'msg': f'Thank you for your order. You will receive an order confirmation message shortly! - SWATKH'
+        'msg': f'Your mobile OTP to reset password is: {otp} - SWATI Shree Hari Doodh'
     }
+
+
     response = requests.get(sms_api_url, params=sms_api_params)
     return response.status_code == 200
 
@@ -1359,7 +1407,7 @@ def send_notification(phone_number):
         'pass': 'Dreamz@2024',
         'senderid': 'SWATKH',
         'to': phone_number,
-        'msg': 'Your password has been changed successfully. - SWATKH'
+        'msg': 'Your password has been changed successfully. - SWATI Shree Hari Doodh'
     }
     response = requests.get(sms_api_url, params=sms_api_params)
     return response.status_code == 200
@@ -1374,7 +1422,7 @@ def reset_password(request):
             user.password = make_password(new_password)
             user.save()
 
-            # Send email notification
+          
             subject = 'Welcome to Shri hari doodh!'
             message = 'Your password has been changed successfully. Thank you for using Shri Hari doodh.'
             from_email = 'info@shreeharidoodh.in'
@@ -1385,8 +1433,8 @@ def reset_password(request):
             if user.phone:
                 send_notification(user.phone)
 
-            messages.success(request, 'Your password has been reset successfully and notifications have been sent.')
-            return redirect('login')
+            messages.success(request, 'Your password has been reset successfully.')
+            return redirect('admin_login')
         except Customer_list.DoesNotExist:
             messages.error(request, 'User not found. Please try again.')
     return render(request, 'shrihariapp/reset_password.html')
