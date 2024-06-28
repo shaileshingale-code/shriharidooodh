@@ -270,6 +270,31 @@ class UserRegistrationView(CreateView):
             self.request.session['sms_response'] = error_message
             messages.error(self.request, error_message)
 
+
+
+        sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+        sms_api_params = {
+            'mobile': '9987952450',
+            'pass': 'Dreamz@2024',
+            'senderid': 'SWATKH',
+            'to': '8421263364',  # The recipient's phone number
+            'msg': 'Thank you for registering. A warm welcome to Shreeharidoodh family !! - SWATKH'  # The message to send
+        }
+
+        try:
+            sms_response = requests.get(sms_api_url, params=sms_api_params)
+            sms_response.raise_for_status()  # Raise an exception for HTTP errors
+            response_message = sms_response.text
+            print("SMS API Response:", response_message)
+            self.request.session['sms_response'] = response_message
+            # messages.success(self.request, response_message)
+
+        except requests.RequestException as e:
+            print("Error sending SMS:", e)
+            error_message = f"Error: Failed to send SMS. {e}"
+            self.request.session['sms_response'] = error_message
+            messages.error(self.request, error_message)    
+
         messages.success(self.request, "Registration successful!")
 
         subject = 'Welcome to Shri hari doodh !'
@@ -277,6 +302,14 @@ class UserRegistrationView(CreateView):
         from_email = 'info@shreeharidoodh.in'  # Change to your email
         to_email = form.cleaned_data['username']  # Assuming your form has an email field
         send_mail(subject, message, from_email, [to_email])
+
+
+        message2 = 'you have new registration please check by login.'
+        subject = 'Welcome to Shri hari doodh !'
+        message = 'Thank you for registering to Shri Hari doodh. We hope you enjoy using our platform.'
+        from_email = 'info@shreeharidoodh.in'  # Change to your email
+        to_email = 'info@shreeharidoodh.in'  # Assuming your form has an email field
+        send_mail(subject, message2, from_email, [to_email])
 
         response = super().form_valid(form)
 
@@ -1244,12 +1277,30 @@ def stop(request):
         send_mail(subject, message, from_email, [to_email])
 
 
+        subject = 'Subscription Pause Request'
+        message = f'Subscription has been paused for order :{leave_id}'
+        from_email = 'info@shreeharidoodh.in' 
+        to_email = 'info@shreeharidoodh.in'  
+        send_mail(subject, message, from_email, [to_email])
+
+
         sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
         sms_api_params = {
             'mobile': '9987952450',
             'pass': 'Dreamz@2024',
             'senderid': 'SWATKH',
             'to': customer_phone,
+            'msg': f'Alert! Order ID: {leave_id} has been PAUSED.- SWATI Shree Hari Doodh'
+        }
+        response = requests.get(sms_api_url, params=sms_api_params)
+
+
+        sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+        sms_api_params = {
+            'mobile': '9987952450',
+            'pass': 'Dreamz@2024',
+            'senderid': 'SWATKH',
+            'to': '8421263364',
             'msg': f'Alert! Order ID: {leave_id} has been PAUSED.- SWATI Shree Hari Doodh'
         }
         response = requests.get(sms_api_url, params=sms_api_params)
@@ -1321,6 +1372,17 @@ def stopforcustomer(request):
             'pass': 'Dreamz@2024',
             'senderid': 'SWATKH',
             'to': customer_phone,
+            'msg': f'We acknowledge that you want to pause/hold your order ID: {leave_id} - SWATI Shree Hari Doodh'
+        }
+        response = requests.get(sms_api_url, params=sms_api_params)
+
+
+        sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+        sms_api_params = {
+            'mobile': '9987952450',
+            'pass': 'Dreamz@2024',
+            'senderid': 'SWATKH',
+            'to': '8421263364',
             'msg': f'We acknowledge that you want to pause/hold your order ID: {leave_id} - SWATI Shree Hari Doodh'
         }
         response = requests.get(sms_api_url, params=sms_api_params)
