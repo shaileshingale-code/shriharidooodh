@@ -776,6 +776,64 @@ def ChangeDetails(request, pk):
 
 
 
+# def order_create(request, product_id):
+#     if request.method == 'POST':
+#         form = OrderForm(request.POST)
+#         if form.is_valid():
+#             form.instance.created_by = request.user
+#             form.instance.product_id_id = product_id
+#             order = form.save()
+
+          
+#             phone_number = request.user.phone 
+
+
+#             product = Products.objects.get(id=product_id)
+#             amount = int(product.saleprice * 100)
+
+            
+#             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+            
+#             amount = amount  
+#             currency = 'INR'
+#             receipt = f'order_{order.id}'
+#             notes = {
+#                 'order_id': order.id,
+#                 'product_id': product_id,
+#                 'type': '1'
+#             }
+
+#             razorpay_order = razorpay_client.order.create({
+#                 'amount': amount,
+#                 'currency': currency,
+#                 'receipt': receipt,
+#                 'notes': notes
+#             })
+
+#             order.razorpay_order_id = razorpay_order['id']
+#             order.save()
+
+#             callback_url = request.build_absolute_uri(reverse('payment_callback'))
+
+#             context = {
+#                 'order': order,
+#                 'razorpay_order_id': razorpay_order['id'],
+#                 'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+#                 'amount': amount,
+#                 'currency': currency,
+#                 'phone_number': phone_number,
+#                 'callback_url': callback_url
+#             }
+
+#             return render(request, 'shrihariapp/razorpay_payment.html', context)
+#     else:
+#         form = OrderForm(product_id=product_id)
+    
+#     return render(request, 'shrihariapp/order_create.html', {'form': form, 'product_id': product_id})
+
+
+
 def order_create(request, product_id):
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -784,18 +842,14 @@ def order_create(request, product_id):
             form.instance.product_id_id = product_id
             order = form.save()
 
-          
-            phone_number = request.user.phone 
-
+            phone_number = request.user.phone
 
             product = Products.objects.get(id=product_id)
             amount = int(product.saleprice * 100)
 
-            
             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
-            
-            amount = amount  
+            amount = amount
             currency = 'INR'
             receipt = f'order_{order.id}'
             notes = {
@@ -829,7 +883,7 @@ def order_create(request, product_id):
             return render(request, 'shrihariapp/razorpay_payment.html', context)
     else:
         form = OrderForm(product_id=product_id)
-    
+
     return render(request, 'shrihariapp/order_create.html', {'form': form, 'product_id': product_id})
 
 
@@ -1031,28 +1085,80 @@ def OrderListView(request):
 
 
 
+# def order_createtwo(request, package_id):
+#     if request.method == 'POST':
+#         form = OrderFormtwo(request.POST)
+#         if form.is_valid():
+#             form.instance.created_by = request.user
+#             form.instance.package_id_id = package_id
+#             order=form.save()
+
+            
+
+          
+#             phone_number = request.user.phone 
+
+
+#             package = Package.objects.get(id=package_id)
+#             amount = int(package.package_price * 100)
+
+            
+#             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+            
+#             amount = amount  
+#             currency = 'INR'
+#             receipt = f'order_{order.id}'
+#             notes = {
+#                 'order_id': order.id,
+#                 'package_id': package_id,
+#                 'type': '2'
+#             }
+
+#             razorpay_order = razorpay_client.order.create({
+#                 'amount': amount,
+#                 'currency': currency,
+#                 'receipt': receipt,
+#                 'notes': notes
+#             })
+
+#             order.razorpay_order_id = razorpay_order['id']
+#             order.save()
+
+#             callback_url = request.build_absolute_uri(reverse('payment_callback'))
+
+#             context = {
+#                 'order': order,
+#                 'razorpay_order_id': razorpay_order['id'],
+#                 'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+#                 'amount': amount,
+#                 'currency': currency,
+#                 'phone_number': phone_number,
+#                 'callback_url': callback_url
+#             }
+
+#             return render(request, 'shrihariapp/razorpay_payment.html', context)
+#     else:
+#         form = OrderFormtwo(package_id=package_id)
+#     return render(request, 'shrihariapp/order_createtwo.html', {'form': form, 'package_id': package_id})
+
+
 def order_createtwo(request, package_id):
     if request.method == 'POST':
         form = OrderFormtwo(request.POST)
         if form.is_valid():
             form.instance.created_by = request.user
             form.instance.package_id_id = package_id
-            order=form.save()
+            order = form.save()
 
-            
-
-          
-            phone_number = request.user.phone 
-
+            phone_number = request.user.phone
 
             package = Package.objects.get(id=package_id)
             amount = int(package.package_price * 100)
 
-            
             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
-            
-            amount = amount  
+            amount = amount
             currency = 'INR'
             receipt = f'order_{order.id}'
             notes = {
@@ -1083,9 +1189,10 @@ def order_createtwo(request, package_id):
                 'callback_url': callback_url
             }
 
-            return render(request, 'shrihariapp/razorpay_payment.html', context)
+            return render(request, 'shrihariapp/razorpay_paymenttwo.html', context)
     else:
         form = OrderFormtwo(package_id=package_id)
+
     return render(request, 'shrihariapp/order_createtwo.html', {'form': form, 'package_id': package_id})
 
 @csrf_exempt
