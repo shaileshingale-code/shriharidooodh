@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 import requests
+from django.urls import reverse
 from django.urls import reverse_lazy
 from django.contrib.auth.hashers import make_password
 from django.views.generic.edit import CreateView
@@ -34,6 +35,7 @@ import requests
 import hashlib
 import json
 import base64
+import razorpay
 # from .models import Users
 from .models import Products
 from .models import Delievery_Management
@@ -253,7 +255,7 @@ class UserRegistrationView(CreateView):
             'pass': 'Dreamz@2024',
             'senderid': 'SWATKH',
             'to': phone_number,  # The recipient's phone number
-            'msg': 'Thank you for registering. A warm welcome to Shreeharidoodh family !! - SWATKH'  # The message to send
+            'msg': f'We acknowledge that you want to pause/hold your order ID: {phone_number} - SWATI Shree Hari Doodh'  # The message to send
         }
 
         try:
@@ -270,15 +272,16 @@ class UserRegistrationView(CreateView):
             self.request.session['sms_response'] = error_message
             messages.error(self.request, error_message)
 
+      
 
-
+        phone_number = form.cleaned_data.get('phone')
         sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
         sms_api_params = {
             'mobile': '9987952450',
             'pass': 'Dreamz@2024',
             'senderid': 'SWATKH',
             'to': '8421263364',  # The recipient's phone number
-            'msg': 'Thank you for registering. A warm welcome to Shreeharidoodh family !! - SWATKH'  # The message to send
+            'msg': f'We acknowledge that you want to pause/hold your order ID: {phone_number} - SWATI Shree Hari Doodh'  # The message to send
         }
 
         try:
@@ -293,7 +296,9 @@ class UserRegistrationView(CreateView):
             print("Error sending SMS:", e)
             error_message = f"Error: Failed to send SMS. {e}"
             self.request.session['sms_response'] = error_message
-            messages.error(self.request, error_message)    
+            messages.error(self.request, error_message)  
+
+            
 
         messages.success(self.request, "Registration successful!")
 
@@ -303,13 +308,13 @@ class UserRegistrationView(CreateView):
         to_email = form.cleaned_data['username']  # Assuming your form has an email field
         send_mail(subject, message, from_email, [to_email])
 
-
-        message2 = 'you have new registration please check by login.'
+        
         subject = 'Welcome to Shri hari doodh !'
-        message = 'Thank you for registering to Shri Hari doodh. We hope you enjoy using our platform.'
+        message = 'you have new registration please check it by login.'
         from_email = 'info@shreeharidoodh.in'  # Change to your email
         to_email = 'info@shreeharidoodh.in'  # Assuming your form has an email field
-        send_mail(subject, message2, from_email, [to_email])
+        send_mail(subject, message, from_email, [to_email])
+        
 
         response = super().form_valid(form)
 
@@ -771,38 +776,6 @@ def ChangeDetails(request, pk):
 
 
 
-
-
-
-MERCHANT_ID = "PGTESTPAYUAT148"
-SALT_KEY = "046d9f63-bf3b-4b74-9b8e-93121160573e"
-SALT_INDEX = "1"
-
-BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox"
-INITIATE_PAYMENT_URL = f"{BASE_URL}/pg/v1/pay"
-STATUS_CHECK_URL = f"{BASE_URL}/pg/v1/status/{{transactionId}}"
-
-def calculate_checksum(payload_str):
-    # Base64 encode the payload
-    payload_base64 = base64.b64encode(payload_str.encode('utf-8'))
-    checksum_input = f"{payload_base64}/pg/v1/pay{SALT_KEY}"
-    checksum_hash = hashlib.sha256(checksum_input.encode('utf-8')).hexdigest()
-    # Append the salt index
-    x_verify_header = f"{checksum_hash}{SALT_INDEX}"
-    return x_verify_header
-
-
-
-def base64_encode(input_dict):
-   
-    json_data = jsons.dumps(input_dict)
-   
-    data_bytes = json_data.encode('utf-8')
-    # Perform Base64 encoding and return the result as a string
-    return base64.b64encode(data_bytes).decode('utf-8')
-
-
-
 def order_create(request, product_id):
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -811,77 +784,100 @@ def order_create(request, product_id):
             form.instance.product_id_id = product_id
             order = form.save()
 
-            phone_number = request.user.phone
-            username = request.user.username
+          
+            phone_number = request.user.phone 
+
 
             product = Products.objects.get(id=product_id)
             amount = int(product.saleprice * 100)
 
-            merchant_transaction_id = f"MT{order.id}_{int(datetime.now().timestamp())}"
-
-            payload = {
-                  "merchantId": "PGTESTPAYUAT148",
-                  "merchantTransactionId": "MT7850590068188104",
-                  "merchantUserId": "MUID123",
-                  "amount": "10000",
-                  "redirectUrl": "http://localhost:8000/shriharidoodhapp/redirect-url/",
-                  "redirectMode": "REDIRECT",
-                  "callbackUrl": "http://localhost:8000/shriharidoodhapp/callback-url/",
-                  "mobileNumber": "9999999999",
-                  "paymentInstrument": {
-                    "type": "PAY_PAGE"
-                  }
-            }
-
-
-
-            payload_str = json.dumps(payload)
-
-        
-            payload_bytes = payload_str.encode('utf-8')
-
-            payload_base64 = base64.b64encode(payload_bytes).decode('utf-8')
-
-         
-
-            x_verify_header = calculate_checksum(payload_str)
-
-            headers = {
-                'Content-Type': 'application/json',
-                'X-VERIFY': "151174730ca711fd80ed9affbb67bc93853e74edac7a193cc1a9c4a845998b1b###1"
-            }
-
-            try:
-                response = requests.post(INITIATE_PAYMENT_URL, headers=headers, data=payload_str)
-                response_data = response.json()
-                
             
-                print(f"Request URL: {INITIATE_PAYMENT_URL}")
-                print(f"Request Headers: {payload}")
-                print(f"Response: {x_verify_header}")
+            razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
-                if response_data.get('success'):
-                    payment_url = response_data['data']['instrumentResponse']['redirectInfo']['url']
-                    return redirect(payment_url)
-                else:
-                    error_message = json.dumps(response_data, indent=2)
-                    messages.error(request, f'Failed to initiate payment. Response: {error_message}')
-                    return redirect('order_list')
+            
+            amount = amount  
+            currency = 'INR'
+            receipt = f'order_{order.id}'
+            notes = {
+                'order_id': order.id,
+                'product_id': product_id
+            }
 
-            except requests.RequestException as e:
-                messages.error(request, f'Error: Failed to communicate with PhonePe API. {e}')
-                return redirect('order_list')
+            razorpay_order = razorpay_client.order.create({
+                'amount': amount,
+                'currency': currency,
+                'receipt': receipt,
+                'notes': notes
+            })
 
+            order.razorpay_order_id = razorpay_order['id']
+            order.save()
+
+            callback_url = request.build_absolute_uri(reverse('payment_callback'))
+
+            context = {
+                'order': order,
+                'razorpay_order_id': razorpay_order['id'],
+                'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+                'amount': amount,
+                'currency': currency,
+                'phone_number': phone_number,
+                'callback_url': callback_url
+            }
+
+            return render(request, 'shrihariapp/razorpay_payment.html', context)
     else:
         form = OrderForm(product_id=product_id)
-
+    
     return render(request, 'shrihariapp/order_create.html', {'form': form, 'product_id': product_id})
 
-def callback(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        transaction_id = data['transactionId']
-        return JsonResponse({"status": "Callback received"}, status=200)
+
+
+
+@csrf_exempt
+def payment_callback(request):
+    if request.method == 'POST':
+        try:
+            razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            payment_id = request.POST.get('razorpay_payment_id')
+            order_id = request.POST.get('razorpay_order_id')
+            signature = request.POST.get('razorpay_signature')
+            order_pk = request.POST.get('order_id')
+
+
+            params_dict = {
+                'razorpay_order_id': order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
+
+            result = razorpay_client.utility.verify_payment_signature(params_dict)
+            
+            print("orderid:", result) 
+            # if result is None:
+                # Fetch the order using the razorpay_order_id
+            order = orders.objects.get(pk=order_pk)
+            order.payment_id = payment_id
+            order.payment_status = 'Paid'
+            order.save()
+            messages.success(request, 'Payment Successful.')
+            # else:
+            #     messages.error(request, 'Payment Verification Failed.')
+
+        except orders.DoesNotExist:
+            messages.error(request, 'Order does not exist.')
+        except Exception as e:
+            print("Error during payment verification:", e)
+            messages.error(request, 'Error during payment verification.')
+
+    return redirect('order_list')   
+
+
+
+
+
+
+
 
 
 
@@ -917,39 +913,93 @@ def order_createtwo(request, package_id):
         form = OrderFormtwo(request.POST)
         if form.is_valid():
             form.instance.created_by = request.user
-            # form.instance.package_id = package_id
-            form.save()
+            form.instance.package_id_id = package_id
+            order=form.save()
 
-            # Extract phone number from the logged-in user
-            phone_number = request.user.phone  # Assuming the User model has a phone field
             
-            # Prepare SMS API request details
-            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
-            sms_api_params = {
-                'mobile': '9987952450',
-                'pass': 'Dreamz@2024',
-                'senderid': 'SWATKH',
-                'to': phone_number, 
-                'msg': 'Thank you for your order. You will receive an order confirmation message shortly! - SWATKH'
+
+          
+            phone_number = request.user.phone 
+
+
+            package = Package.objects.get(id=package_id)
+            amount = int(package.package_price * 100)
+
+            
+            razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+            
+            amount = amount  
+            currency = 'INR'
+            receipt = f'order_{order.id}'
+            notes = {
+                'order_id': order.id,
+                'package_id': package_id
             }
 
-            try:
-                sms_response = requests.get(sms_api_url, params=sms_api_params)
-                sms_response.raise_for_status()  # Raise an exception for HTTP errors
-                response_message = sms_response.text
-                print("SMS API Response:", response_message)
-                messages.success(request, f'Order Created Successfully. ')
-            except requests.RequestException as e:
-                print("Error sending SMS:", e)
-                error_message = f"Error: Failed to send SMS. {e}"
-                messages.error(request, error_message)
-            
-            return redirect('daily_list')  # Redirect to a success page
+            razorpay_order = razorpay_client.order.create({
+                'amount': amount,
+                'currency': currency,
+                'receipt': receipt,
+                'notes': notes
+            })
+
+            order.razorpay_order_id = razorpay_order['id']
+            order.save()
+
+            callback_url = request.build_absolute_uri(reverse('payment_callbacktwo'))
+
+            context = {
+                'order': order,
+                'razorpay_order_id': razorpay_order['id'],
+                'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+                'amount': amount,
+                'currency': currency,
+                'phone_number': phone_number,
+                'callback_url': callback_url
+            }
+
+            return render(request, 'shrihariapp/razorpay_payment.html', context)
     else:
         form = OrderFormtwo(package_id=package_id)
     return render(request, 'shrihariapp/order_createtwo.html', {'form': form, 'package_id': package_id})
 
+@csrf_exempt
+def payment_callbacktwo(request):
+    if request.method == 'POST':
+        try:
+            razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            payment_id = request.POST.get('razorpay_payment_id')
+            order_id = request.POST.get('razorpay_order_id')
+            signature = request.POST.get('razorpay_signature')
+            order_pk = request.POST.get('order_id')
 
+
+            params_dict = {
+                'razorpay_order_id': order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
+
+            result = razorpay_client.utility.verify_payment_signature(params_dict)
+            
+            print("orderid:", result) 
+          
+            order = daily_orders.objects.get(pk=order_pk)
+            order.payment_id = payment_id
+            order.payment_status = 'Paid'
+            order.save()
+            messages.success(request, 'Payment Successful.')
+            # else:
+            #     messages.error(request, 'Payment Verification Failed.')
+
+        except orders.DoesNotExist:
+            messages.error(request, 'Order does not exist.')
+        except Exception as e:
+            print("Error during payment verification:", e)
+            messages.error(request, 'Error during payment verification.')
+
+    return redirect('daily_list')   
 
 @never_cache
 @login_required 

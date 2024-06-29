@@ -38,7 +38,7 @@ class Package(models.Model):
     apply_by = models.CharField(max_length=100)
     products = models.ManyToManyField(Products)
     package_name = models.CharField(max_length=30)
-    package_price = models.CharField(max_length=30)
+    package_price = models.IntegerField()
     package_days = models.IntegerField()
     gap_days = models.IntegerField(blank=True, null=True)
     package_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
@@ -84,6 +84,8 @@ class orders(models.Model):
     product_id = models.ForeignKey(Products, on_delete=models.CASCADE)
     delievery_address = models.CharField(max_length=100)
     order_qty = models.IntegerField()
+    payment_id=models.CharField(max_length=1000,blank=True, null=True)
+    payment_status=models.CharField(max_length=1000,blank=True, null=True)
 
     
     def __str__(self):
@@ -105,6 +107,8 @@ class daily_orders(models.Model):
     delievery_address = models.CharField(max_length=100,blank=True, null=True)
     customer_plan = models.CharField(max_length=100,blank=True, null=True)
     description = models.CharField(blank=True, null=True ,max_length=500)
+    payment_id=models.CharField(max_length=1000,blank=True, null=True)
+    payment_status=models.CharField(max_length=1000,blank=True, null=True)
    
 
     
