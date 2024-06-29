@@ -36,6 +36,7 @@
              <th> Unit price</th>
              <th> Qty</th>
              <th> Payable Amount</th>
+             <th> Payment</th>
              
 
              <!-- <th>Action</th>   -->
@@ -60,6 +61,7 @@
             {% load custom_filters %}
             {% with price=order.product_id.saleprice|mul:order.order_qty %}
               <td>{{ price }}</td>
+              <td>{{ order.payment_status }}</td>
 
              {% endwith %}
              </td>
@@ -80,6 +82,7 @@
             {% load custom_filters %}
             {% with price=order.product_id.saleprice|mul:order.order_qty %}
               <td>{{ price }}</td>
+              <td>{{ order.payment_status }}</td>
 
              {% endwith %}
              </td>
