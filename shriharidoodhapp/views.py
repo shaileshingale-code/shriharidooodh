@@ -800,7 +800,8 @@ def order_create(request, product_id):
             receipt = f'order_{order.id}'
             notes = {
                 'order_id': order.id,
-                'product_id': product_id
+                'product_id': product_id,
+                'type': '1'
             }
 
             razorpay_order = razorpay_client.order.create({
@@ -834,6 +835,87 @@ def order_create(request, product_id):
 
 
 
+# @csrf_exempt
+# def payment_callback(request):
+#     if request.method == 'POST':
+#         try:
+#             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+#             payment_id = request.POST.get('razorpay_payment_id')
+#             order_id = request.POST.get('razorpay_order_id')
+#             signature = request.POST.get('razorpay_signature')
+#             order_pk = request.POST.get('order_id')
+
+
+#             params_dict = {
+#                 'razorpay_order_id': order_id,
+#                 'razorpay_payment_id': payment_id,
+#                 'razorpay_signature': signature
+#             }
+
+#             result = razorpay_client.utility.verify_payment_signature(params_dict)
+#             phone_number = request.user.phone 
+#             print("orderid:", phone_number) 
+#             # if result is None:
+#                 # Fetch the order using the razorpay_order_id
+#             order = orders.objects.get(pk=order_pk)
+#             order.payment_id = payment_id
+#             order.payment_status = 'Paid'
+#             order.save()
+
+#             phone_number = request.user.phone 
+#             sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+#             sms_api_params = {
+#                 'mobile': '9987952450',
+#                 'pass': 'Dreamz@2024',
+#                 'senderid': 'SWATKH',
+#                 'to': phone_number,
+#                 'msg': f'New Order ID: {order_pk} has been created. - SWATI Shree Hari Doodh'
+#             }
+#             response = requests.get(sms_api_url, params=sms_api_params)
+
+
+#             phone_number = request.user.phone 
+#             username = request.user.username
+#             sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+#             sms_api_params = {
+#                 'mobile': '9987952450',
+#                 'pass': 'Dreamz@2024',
+#                 'senderid': 'SWATKH',
+#                 'to': '8421263364',
+#                 'msg': f'New Order ID: {order_pk} has been created. - SWATI Shree Hari Doodh'
+#             }
+#             response = requests.get(sms_api_url, params=sms_api_params)
+#             print("orderid:", response) 
+#             print("orderid:", phone_number) 
+
+
+#             subject = 'Welcome to Shri hari doodh !'
+#             message = 'Thank you for ordering to Shri Hari doodh. We hope you enjoy using our platform.'
+#             from_email = 'info@shreeharidoodh.in'  # Change to your email
+#             to_email = username  # Assuming your form has an email field
+#             send_mail(subject, message, from_email, [to_email])
+
+            
+#             subject = 'Welcome to Shri hari doodh !'
+#             message = 'you have recievedone order please check it by login.'
+#             from_email = 'info@shreeharidoodh.in'  # Change to your email
+#             to_email = 'info@shreeharidoodh.in'  # Assuming your form has an email field
+#             send_mail(subject, message, from_email, [to_email])
+#             messages.success(request, 'Payment Successful.')
+#             # else:
+#             #     messages.error(request, 'Payment Verification Failed.')
+
+#         except orders.DoesNotExist:
+#             messages.error(request, 'Order does not exist.')
+#         except Exception as e:
+#             print("Error during payment verification:", e)
+#             messages.error(request, 'Error during payment verification.')
+            
+
+
+#     return redirect('order_list')   
+
+
 @csrf_exempt
 def payment_callback(request):
     if request.method == 'POST':
@@ -842,8 +924,6 @@ def payment_callback(request):
             payment_id = request.POST.get('razorpay_payment_id')
             order_id = request.POST.get('razorpay_order_id')
             signature = request.POST.get('razorpay_signature')
-            order_pk = request.POST.get('order_id')
-
 
             params_dict = {
                 'razorpay_order_id': order_id,
@@ -852,14 +932,27 @@ def payment_callback(request):
             }
 
             result = razorpay_client.utility.verify_payment_signature(params_dict)
-            phone_number = request.user.phone 
-            print("orderid:", phone_number) 
-            # if result is None:
-                # Fetch the order using the razorpay_order_id
-            order = orders.objects.get(pk=order_pk)
-            order.payment_id = payment_id
-            order.payment_status = 'Paid'
-            order.save()
+            order_type = None
+
+            # Fetch the Razorpay order to get the notes
+            razorpay_order = razorpay_client.order.fetch(order_id)
+            if 'notes' in razorpay_order and 'type' in razorpay_order['notes']:
+                order_type = razorpay_order['notes']['type']
+                order_pk = razorpay_order['notes']['order_id']
+
+            if order_type == '1':
+                # Handle type 1 order
+                order = orders.objects.get(pk=order_pk)
+                order.payment_id = payment_id
+                order.payment_status = 'Paid'
+                order.save()
+
+            elif order_type == '2':
+                # Handle type 2 order
+                order = daily_orders.objects.get(pk=order_pk)
+                order.payment_id = payment_id
+                order.payment_status = 'Paid'
+                order.save()
 
             phone_number = request.user.phone 
             sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
@@ -872,49 +965,37 @@ def payment_callback(request):
             }
             response = requests.get(sms_api_url, params=sms_api_params)
 
-
-            phone_number = request.user.phone 
             username = request.user.username
-            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
-            sms_api_params = {
-                'mobile': '9987952450',
-                'pass': 'Dreamz@2024',
-                'senderid': 'SWATKH',
-                'to': '8421263364',
-                'msg': f'New Order ID: {order_pk} has been created. - SWATI Shree Hari Doodh'
-            }
+            sms_api_params['to'] = '8421263364'
             response = requests.get(sms_api_url, params=sms_api_params)
-            print("orderid:", response) 
-            print("orderid:", phone_number) 
-
 
             subject = 'Welcome to Shri hari doodh !'
             message = 'Thank you for ordering to Shri Hari doodh. We hope you enjoy using our platform.'
-            from_email = 'info@shreeharidoodh.in'  # Change to your email
-            to_email = username  # Assuming your form has an email field
+            from_email = 'info@shreeharidoodh.in'
+            to_email = username
             send_mail(subject, message, from_email, [to_email])
 
-            
-            subject = 'Welcome to Shri hari doodh !'
-            message = 'you have recievedone order please check it by login.'
-            from_email = 'info@shreeharidoodh.in'  # Change to your email
-            to_email = 'info@shreeharidoodh.in'  # Assuming your form has an email field
+            subject = 'New Order Notification'
+            message = 'You have received a new order. Please check it by logging in.'
+            to_email = 'info@shreeharidoodh.in'
             send_mail(subject, message, from_email, [to_email])
+
             messages.success(request, 'Payment Successful.')
-            # else:
-            #     messages.error(request, 'Payment Verification Failed.')
+
+            if order_type == '1':
+                return redirect('order_list')
+            elif order_type == '2':
+                return redirect('daily_list')
 
         except orders.DoesNotExist:
+            messages.error(request, 'Order does not exist.')
+        except daily_orders.DoesNotExist:
             messages.error(request, 'Order does not exist.')
         except Exception as e:
             print("Error during payment verification:", e)
             messages.error(request, 'Error during payment verification.')
-            
 
-
-    return redirect('order_list')   
-
-
+    return redirect('order_list')
 
 
 
@@ -976,7 +1057,8 @@ def order_createtwo(request, package_id):
             receipt = f'order_{order.id}'
             notes = {
                 'order_id': order.id,
-                'package_id': package_id
+                'package_id': package_id,
+                'type': '2'
             }
 
             razorpay_order = razorpay_client.order.create({
@@ -989,7 +1071,7 @@ def order_createtwo(request, package_id):
             order.razorpay_order_id = razorpay_order['id']
             order.save()
 
-            callback_url = request.build_absolute_uri(reverse('payment_callbacktwo'))
+            callback_url = request.build_absolute_uri(reverse('payment_callback'))
 
             context = {
                 'order': order,
