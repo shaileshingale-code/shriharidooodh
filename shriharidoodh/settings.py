@@ -87,6 +87,9 @@ EMAIL_HOST_PASSWORD = 'Shreehari@2024#$!'
 WSGI_APPLICATION = 'shriharidoodh.wsgi.application'
 
 
+RAZORPAY_KEY_ID = 'rzp_live_vTnV388KYPcnwr'
+RAZORPAY_KEY_SECRET = '0hFDVDcg77XpDLipN2gjgB1H'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
