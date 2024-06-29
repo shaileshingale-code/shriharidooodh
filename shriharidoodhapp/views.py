@@ -338,7 +338,7 @@ class UserLoginView(LoginView):
 def Dashboard(request):
     user = request.user
     if user.role == 'admin':
-        customer_count = Customer_list.objects.count()
+        customer_count = Customer_list.objects.filter(role='customer').count()
         product_count = Products.objects.count()
         order_count1 = orders.objects.count()
         order_count2 = daily_orders.objects.count()
