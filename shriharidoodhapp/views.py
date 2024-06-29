@@ -102,7 +102,7 @@ from .forms import UsernameForm, CustomSetPasswordForm
 #         whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
 #         whatsapp_api_params = {
 #             'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
-#             'to': '919284546933',  
+#             'to': '918421263364',  
 #             'message': 'Hello, welcome!',  
 #             'IsUrgent': 'False',
 #             'isDeleteAfterSend': 'False',
@@ -147,7 +147,7 @@ from .forms import UsernameForm, CustomSetPasswordForm
 #         whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
 #         whatsapp_api_params = {
 #             'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
-#             'to': '919284546933',  
+#             'to': '918421263364',  
 #             'message': 'Hello, welcome!',  
 #             'IsUrgent': 'False',
 #             'isDeleteAfterSend': 'False',
@@ -196,7 +196,7 @@ from .forms import UsernameForm, CustomSetPasswordForm
 #         whatsapp_api_url = 'http://wa.dreamztechnolgy.org/api/v1/sendMessage'
 #         whatsapp_api_params = {
 #             'key': 'd7abcb9dd2a34f2b9e1cd40145144ae1',
-#             'to': '919284546933',  
+#             'to': '918421263364',  
 #             'message': 'Hello, welcome!',  
 #             'IsUrgent': 'False',
 #             'isDeleteAfterSend': 'False',
@@ -852,14 +852,54 @@ def payment_callback(request):
             }
 
             result = razorpay_client.utility.verify_payment_signature(params_dict)
-            
-            print("orderid:", result) 
+            phone_number = request.user.phone 
+            print("orderid:", phone_number) 
             # if result is None:
                 # Fetch the order using the razorpay_order_id
             order = orders.objects.get(pk=order_pk)
             order.payment_id = payment_id
             order.payment_status = 'Paid'
             order.save()
+
+            phone_number = request.user.phone 
+            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+            sms_api_params = {
+                'mobile': '9987952450',
+                'pass': 'Dreamz@2024',
+                'senderid': 'SWATKH',
+                'to': phone_number,
+                'msg': f'New Order ID: {order_pk} has been created. - SWATI Shree Hari Doodh'
+            }
+            response = requests.get(sms_api_url, params=sms_api_params)
+
+
+            phone_number = request.user.phone 
+            username = request.user.username
+            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+            sms_api_params = {
+                'mobile': '9987952450',
+                'pass': 'Dreamz@2024',
+                'senderid': 'SWATKH',
+                'to': '8421263364',
+                'msg': f'New Order ID: {order_pk} has been created. - SWATI Shree Hari Doodh'
+            }
+            response = requests.get(sms_api_url, params=sms_api_params)
+            print("orderid:", response) 
+            print("orderid:", phone_number) 
+
+
+            subject = 'Welcome to Shri hari doodh !'
+            message = 'Thank you for ordering to Shri Hari doodh. We hope you enjoy using our platform.'
+            from_email = 'info@shreeharidoodh.in'  # Change to your email
+            to_email = username  # Assuming your form has an email field
+            send_mail(subject, message, from_email, [to_email])
+
+            
+            subject = 'Welcome to Shri hari doodh !'
+            message = 'you have recievedone order please check it by login.'
+            from_email = 'info@shreeharidoodh.in'  # Change to your email
+            to_email = 'info@shreeharidoodh.in'  # Assuming your form has an email field
+            send_mail(subject, message, from_email, [to_email])
             messages.success(request, 'Payment Successful.')
             # else:
             #     messages.error(request, 'Payment Verification Failed.')
@@ -869,6 +909,8 @@ def payment_callback(request):
         except Exception as e:
             print("Error during payment verification:", e)
             messages.error(request, 'Error during payment verification.')
+            
+
 
     return redirect('order_list')   
 
@@ -989,6 +1031,45 @@ def payment_callbacktwo(request):
             order.payment_id = payment_id
             order.payment_status = 'Paid'
             order.save()
+
+            phone_number = request.user.phone 
+            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+            sms_api_params = {
+                'mobile': '9987952450',
+                'pass': 'Dreamz@2024',
+                'senderid': 'SWATKH',
+                'to': phone_number,
+                'msg': f'New Order ID: {order_pk} has been created. - SWATI Shree Hari Doodh'
+            }
+            response = requests.get(sms_api_url, params=sms_api_params)
+
+
+
+            phone_number = request.user.phone 
+            username = request.user.username 
+            sms_api_url = 'http://trans.dreamztechnolgy.org/smsstatuswithid.aspx'
+            sms_api_params = {
+                'mobile': '9987952450',
+                'pass': 'Dreamz@2024',
+                'senderid': 'SWATKH',
+                'to': '8421263364',
+                'msg': f'New Order ID: {order_pk} has been created. - SWATI Shree Hari Doodh'
+            }
+            response = requests.get(sms_api_url, params=sms_api_params)
+
+            subject = 'Welcome to Shri hari doodh !'
+            message = 'Thank you for ordering to Shri Hari doodh. We hope you enjoy using our platform.'
+            from_email = 'info@shreeharidoodh.in'  # Change to your email
+            to_email = username  # Assuming your form has an email field
+            send_mail(subject, message, from_email, [to_email])
+
+            
+            subject = 'Welcome to Shri hari doodh !'
+            message = 'you have recievedone order please check it by login.'
+            from_email = 'info@shreeharidoodh.in'  # Change to your email
+            to_email = 'info@shreeharidoodh.in'  # Assuming your form has an email field
+            send_mail(subject, message, from_email, [to_email])
+
             messages.success(request, 'Payment Successful.')
             # else:
             #     messages.error(request, 'Payment Verification Failed.')
@@ -998,6 +1079,10 @@ def payment_callbacktwo(request):
         except Exception as e:
             print("Error during payment verification:", e)
             messages.error(request, 'Error during payment verification.')
+
+
+
+            
 
     return redirect('daily_list')   
 
