@@ -845,7 +845,9 @@ def order_create(request, product_id):
             phone_number = request.user.phone
 
             product = Products.objects.get(id=product_id)
-            amount = int(product.saleprice * 100)
+            quantity = form.cleaned_data['order_qty']  # Assuming 'quantity' is a field in your form
+            amount = int(product.saleprice * quantity * 100) 
+            # amount = int(product.saleprice * 100)
 
             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
