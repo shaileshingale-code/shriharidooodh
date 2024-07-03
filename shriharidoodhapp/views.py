@@ -255,7 +255,7 @@ class UserRegistrationView(CreateView):
             'pass': 'Dreamz@2024',
             'senderid': 'SWATKH',
             'to': phone_number,  # The recipient's phone number
-            'msg': f'We acknowledge that you want to pause/hold your order ID: {phone_number} - SWATI Shree Hari Doodh'  # The message to send
+            'msg': 'Thank you for registering. A warm welcome to Shree Hari Doodh family !! - SWATI Shree Hari Doodh'  # The message to send
         }
 
         try:
@@ -281,7 +281,7 @@ class UserRegistrationView(CreateView):
             'pass': 'Dreamz@2024',
             'senderid': 'SWATKH',
             'to': '8421263364',  # The recipient's phone number
-            'msg': f'We acknowledge that you want to pause/hold your order ID: {phone_number} - SWATI Shree Hari Doodh'  # The message to send
+            'msg': 'Thank you for registering. A warm welcome to Shree Hari Doodh family !! - SWATI Shree Hari Doodh'  # The message to send
         }
 
         try:
